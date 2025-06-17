@@ -57,7 +57,7 @@
             top: 0;
             bottom: 0;
             z-index: 1100;
-            transform: translateX(100%);
+            transform: translateX(100%); /* Hidden by default on mobile */
         }
         .sidebar.open {
             transform: translateX(0);
@@ -107,11 +107,11 @@
             padding: 20px;
             overflow-y: auto;
             transition: margin-right 0.3s ease;
-            margin-right: 0;
+            margin-right: 0; /* No margin on mobile */
         }
 
         .menu-toggle {
-            display: none;
+            display: none; /* Hidden by default */
             position: fixed;
             top: 15px;
             right: 15px;
@@ -169,9 +169,9 @@
             padding: 8px 10px;
             text-align: right;
             vertical-align: middle;
-            white-space: nowrap;
+            white-space: nowrap; /* Keep table cells from breaking line on header */
         }
-        td { white-space: normal; }
+        td { white-space: normal; } /* Allow content in data cells to wrap */
 
         th {
             background-color: var(--secondary-color);
@@ -223,7 +223,7 @@
             gap: 5px;
         }
         button:hover, .button:hover { background-color: #16a085;  }
-        button:active, .button:active { transform: translateY(0px); }
+        button:active, .button:active { transform: translateY(1px); }
         button:disabled, .button:disabled {
             background-color: var(--medium-gray);
             cursor: not-allowed;
@@ -293,6 +293,7 @@
             border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             text-align: center; transition: transform 0.2s ease;
         }
+        .stat-card:hover { transform: translateY(-3px); }
         .stat-card .icon { font-size: 2em; color: var(--secondary-color); margin-bottom: 8px; }
         .stat-card h3 { margin-top: 0; color: var(--primary-color); font-size: 1em;}
         .stat-card p { font-size: 1.8em; font-weight: bold; color: var(--accent-color); margin: 5px 0 0;}
@@ -343,16 +344,14 @@
         .toast {
             position: fixed;
             bottom: 20px;
-            left: 10px;
-            right: 10px;
-            transform: none; /* For mobile, allow full width */
-            margin: 0 auto; /* Center on larger screens if max-width is set */
-            max-width: 400px; /* Optional: Limit width on larger screens */
-            padding: 10px 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 20px;
             border-radius: 5px;
             color: white;
             z-index: 2000;
-            font-size: 0.9em;
+            font-size: 1em;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             opacity: 0;
             transition: opacity 0.3s ease-in-out, bottom 0.3s ease-in-out;
             text-align: center;
@@ -363,33 +362,79 @@
         .toast.show { opacity: 1; bottom: 30px; }
 
         #poItemsTable td input[type="number"],
-        #poItemsTable td input[type="text"] /* If product name becomes editable */
+        #poItemsTable td input[type="text"]
         {
-            width: 80px; /* Adjust as needed */
+            width: 80px;
             padding: 5px;
             font-size: 0.9em;
             text-align: center;
         }
-        #poItemsTable td:first-child { /* Product name column */
-            width: auto; /* Allow it to take more space */
+        #poItemsTable td:first-child {
+            width: auto;
             white-space: normal;
         }
 
-
+        /* --- STYLES FOR PRINTING --- */
         @media print {
-            body * { visibility: hidden; }
-            #invoiceToPrint, #invoiceToPrint * { visibility: visible; }
-            #invoiceToPrint {
-                position: absolute; left: 0; top: 0; width: 100%;
-                font-size: 12pt; padding: 10mm; box-sizing: border-box;
+            body, html {
+                background: var(--white) !important;
+                color: #000 !important;
+                margin: 0;
+                padding: 0;
             }
-            #invoiceToPrint h1, #invoiceToPrint h2, #invoiceToPrint h3 { color: #000 !important; text-align: center; margin-bottom: 15px; }
-            #invoiceToPrint table { width: 100%; border-collapse: collapse; margin-top: 10px; color: #000 !important; }
-            #invoiceToPrint th, #invoiceToPrint td { border: 1px solid #666; padding: 8px; text-align: right; color: #000 !important; }
+            .sidebar, .main-content > .page-header, .menu-toggle, .modal, .toast, .no-print,
+            button, .button, .action-buttons {
+                display: none !important;
+            }
+            .main-content {
+                margin-right: 0 !important;
+                padding: 0 !important;
+            }
+            body > *:not(#invoiceToPrint) {
+                display: none !important;
+            }
+            #invoiceToPrint {
+                display: block !important;
+                visibility: visible !important;
+                position: static !important;
+                width: 100%;
+                margin: 0 auto;
+                padding: 10mm;
+                box-shadow: none;
+                border: none;
+                font-family: Arial, sans-serif;
+                font-size: 12pt;
+                color: #000 !important;
+            }
+            #invoiceToPrint * {
+                visibility: visible !important;
+                color: #000 !important;
+                background-color: transparent !important;
+            }
+            #invoiceToPrint h1, #invoiceToPrint h2, #invoiceToPrint h3 {
+                text-align: center;
+                margin-bottom: 15px;
+            }
+            #invoiceToPrint table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10px;
+            }
+            #invoiceToPrint th, #invoiceToPrint td {
+                border: 1px solid #666 !important;
+                padding: 8px;
+                text-align: right;
+            }
             #invoiceToPrint th { background-color: #eee !important; }
             #invoiceToPrint .invoice-header p, #invoiceToPrint .invoice-summary p { margin: 5px 0; }
-            #invoiceToPrint .invoice-summary { margin-top: 20px; text-align: left; padding-right: 10px;}
-            .no-print, .modal, .sidebar, .page-header button, .action-buttons button, .menu-toggle { display: none !important; }
+            #invoiceToPrint .invoice-summary {
+                margin-top: 20px;
+                text-align: left;
+                padding-right: 10px;
+            }
+             #invoiceToPrint .invoice-summary p {
+                text-align: right !important; /* Force right align for summary */
+             }
         }
 
         @media (min-width: 768px) {
@@ -415,6 +460,8 @@
             }
             .page-header h1 {
                 font-size: 1.4em;
+                width: 100%;
+                text-align: center;
             }
             .page-header button {
                 font-size: 0.9em;
@@ -455,7 +502,7 @@
                 margin-bottom: 0;
             }
              .modal-content {
-                margin: 10% auto; /* More margin for smaller screens */
+                margin: 10% auto;
             }
         }
     </style>
@@ -914,26 +961,25 @@
         </div>
     </div>
 
-    <!-- View Purchase Order Details Modal (NEW) -->
+    <!-- View Purchase Order Details Modal -->
     <div id="viewPurchaseOrderModal" class="modal">
         <div class="modal-content" style="max-width: 700px;">
             <div class="modal-header">
                 <h3>تفاصيل طلب الشراء رقم: <span id="viewPoId"></span></h3>
                 <span class="close-button" data-modal-id="viewPurchaseOrderModal">×</span>
             </div>
-            <div id="viewPoDetailsBody">
+            <div id="viewPoDetailsBody" style="padding: 10px 0;">
                 <!-- PO details will be injected here -->
             </div>
              <div style="margin-top: 15px; display: flex; justify-content: flex-end; gap:10px;" class="no-print">
-                <!-- Add print PO button here if needed -->
+                 <!-- Actions like print PO can be added here -->
             </div>
         </div>
     </div>
 
 
-    <!-- Hidden div for printing invoice content -->
-    <div id="invoiceToPrint" style="display: none; font-family: Arial, sans-serif; direction: rtl; padding: 20px; color: #000;">
-    </div>
+    <!-- Hidden div for printing invoice content. MUST be a direct child of <body> for print styles to work reliably -->
+    <div id="invoiceToPrint" style="display: none;"></div>
 
 <script>
     // --- Polyfill for structuredClone ---
@@ -943,29 +989,7 @@
 
     // --- Application State & LocalStorage ---
     const APP_PREFIX = 'proStoreManager_v7_'; // Increment version for major changes
-    let state = {
-        products: [],
-        categories: [],
-        customers: [],
-        sales: [],
-        currentCart: [],
-        suppliers: [],
-        purchaseOrders: [],
-        expenses: [],
-        currency: {
-            code: "DZD",
-            symbol: "د.ج",
-            name: "الدينار الجزائري (DZD)"
-        },
-        taxRate: 0.19,
-        storeDetails: {
-            name: "اسم المحل التجاري",
-            address: "العنوان، المدينة، الدولة",
-            phone: "000-000-0000",
-            email: "store@example.com",
-            logoUrl: ""
-        }
-    };
+    let state = {};
 
     const currencies = [
         { code: "DZD", symbol: "د.ج", name: "الدينار الجزائري (DZD)" }, { code: "MAD", symbol: "د.م.", name: "الدرهم المغربي (MAD)" },
@@ -987,14 +1011,18 @@
         if (storedState) {
             const parsedState = JSON.parse(storedState);
             state = { ...defaultStateStructure, ...parsedState };
+            // Deep merge nested objects to ensure new keys in default structure are added
             state.currency = { ...defaultStateStructure.currency, ...(parsedState.currency || {}) };
             state.storeDetails = { ...defaultStateStructure.storeDetails, ...(parsedState.storeDetails || {}) };
-            state.suppliers = parsedState.suppliers || [];
+            
+            // Re-hydrate Date objects from string representations
+            state.sales = (parsedState.sales || []).map(sale => ({ ...sale, date: new Date(sale.date) }));
             state.purchaseOrders = (parsedState.purchaseOrders || []).map(po => ({...po, date: new Date(po.date), expectedDate: po.expectedDate ? new Date(po.expectedDate) : null, receivedDate: po.receivedDate ? new Date(po.receivedDate) : null }));
             state.expenses = (parsedState.expenses || []).map(exp => ({...exp, date: new Date(exp.date) }));
-            state.sales = state.sales.map(sale => ({ ...sale, date: new Date(sale.date) }));
-             // Ensure costPrice exists on products
-            state.products = state.products.map(p => ({ ...p, costPrice: p.costPrice || 0 }));
+            
+            // Ensure data integrity for older versions
+            state.products = (parsedState.products || []).map(p => ({ ...p, costPrice: p.costPrice || 0 }));
+            state.suppliers = parsedState.suppliers || [];
 
         } else {
             state = { ...defaultStateStructure };
@@ -1022,11 +1050,13 @@
     function formatDate(dateInput) {
         if (!dateInput) return '-';
         const date = new Date(dateInput);
+        if (isNaN(date)) return '-';
         return date.toLocaleString('ar-SA', { dateStyle: 'medium', timeStyle: 'short' });
     }
     function formatDateForInput(dateInput) {
         if (!dateInput) return '';
         const d = new Date(dateInput);
+        if (isNaN(d)) return '';
         let month = '' + (d.getMonth() + 1);
         let day = '' + d.getDate();
         const year = d.getFullYear();
@@ -1153,7 +1183,7 @@
                 (field.options || []).forEach(opt => {
                     const option = document.createElement('option');
                     option.value = opt.value; option.textContent = opt.text;
-                    if (data[field.name] === opt.value) option.selected = true;
+                    if (data[field.name] == opt.value) option.selected = true; // Use == for type coercion
                     select.appendChild(option);
                 });
                 group.appendChild(select);
@@ -1181,7 +1211,9 @@
         });
 
         const submitButton = document.createElement('button');
-        submitButton.type = 'submit'; submitButton.textContent = data.id ? 'تحديث' : 'حفظ'; submitButton.className = 'primary';
+        submitButton.type = 'submit';
+        submitButton.className = 'primary';
+        submitButton.innerHTML = `<span class="icon">💾</span> ${data.id ? 'تحديث' : 'حفظ'}`;
         formElement.appendChild(submitButton);
 
         formElement.onsubmit = (e) => {
@@ -1194,7 +1226,9 @@
                 } else if (field.type === 'number' && itemData[field.name] === '') {
                     itemData[field.name] = field.min !== undefined ? field.min : 0;
                 } else if (field.type === 'date' && itemData[field.name]) {
-                    itemData[field.name] = new Date(itemData[field.name]).toISOString();
+                    // Convert local date string from input to a full ISO string at midnight UTC
+                    const [year, month, day] = itemData[field.name].split('-').map(Number);
+                    itemData[field.name] = new Date(Date.UTC(year, month - 1, day)).toISOString();
                 }
             });
             if (data.id) itemData.id = data.id;
@@ -1265,10 +1299,15 @@
             try {
                 const filename = `store_backup_${formatDateForInput(new Date())}.json`;
                 const dataStr = JSON.stringify(state, null, 2);
-                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                const blob = new Blob([dataStr], {type: "application/json"});
+                const url = URL.createObjectURL(blob);
                 const linkElement = document.createElement('a');
-                linkElement.setAttribute('href', dataUri); linkElement.setAttribute('download', filename);
+                linkElement.href = url;
+                linkElement.download = filename;
+                document.body.appendChild(linkElement);
                 linkElement.click();
+                document.body.removeChild(linkElement);
+                URL.revokeObjectURL(url);
                 showToast('تم تصدير البيانات بنجاح!', 'success');
             } catch (error) { console.error("Backup error:", error); showToast('خطأ في تصدير البيانات.', 'error'); }
         });
@@ -1276,27 +1315,18 @@
 
     if (restoreDataBtn && restoreDataFile) {
         restoreDataBtn.addEventListener('click', () => {
-            if (restoreDataFile.files.length === 0) { showToast('اختر ملف النسخ الاحتياطي.', 'info'); return; }
+            if (restoreDataFile.files.length === 0) { showToast('الرجاء اختيار ملف النسخ الاحتياطي أولاً.', 'info'); return; }
             const file = restoreDataFile.files[0];
             const reader = new FileReader();
             reader.onload = (event) => {
                 try {
                     const importedState = JSON.parse(event.target.result);
                     showConfirmModal(
-                        'هل أنت متأكد من استعادة البيانات؟ سيتم استبدال جميع البيانات الحالية.',
+                        'هل أنت متأكد من استعادة البيانات؟ سيتم استبدال جميع البيانات الحالية بشكل دائم.',
                         () => {
-                            state = importedState; // Replace state
-                            // Re-initialize dates for relevant parts of the state
-                            state.sales = (state.sales || []).map(sale => ({ ...sale, date: new Date(sale.date) }));
-                            state.purchaseOrders = (state.purchaseOrders || []).map(po => ({...po, date: new Date(po.date), expectedDate: po.expectedDate ? new Date(po.expectedDate) : null, receivedDate: po.receivedDate ? new Date(po.receivedDate) : null }));
-                            state.expenses = (state.expenses || []).map(exp => ({...exp, date: new Date(exp.date) }));
-                            state.products = (state.products || []).map(p => ({ ...p, costPrice: p.costPrice || 0 }));
-
-
-                            saveState();
-                            showToast('تم استعادة البيانات بنجاح! يرجى إعادة تحميل الصفحة أو التنقل بين الصفحات لتحديث الواجهة.', 'success', 5000);
-                            loadState(); // Re-run loadState to ensure proper parsing and defaults for any new structures
-                            showPage('dashboard');
+                            localStorage.setItem(APP_PREFIX + 'appState', JSON.stringify(importedState));
+                            showToast('تم استعادة البيانات بنجاح! سيتم إعادة تحميل الصفحة لتطبيق التغييرات.', 'success', 5000);
+                            setTimeout(() => window.location.reload(), 2000);
                         },
                         'تأكيد استعادة البيانات'
                     );
@@ -1308,9 +1338,7 @@
     }
 
     function updateCurrencyDisplayElements() {
-        // This function might need to update more elements across the UI
         if (document.getElementById('pos').classList.contains('active')) renderPosCart();
-        // Force re-render of other relevant views if currency changes affect them significantly
     }
     function updateTaxRateDisplayElements() {
         const taxRateDisplay = document.getElementById('posTaxRateDisplay');
@@ -1336,7 +1364,7 @@
     function renderCategoriesTable() {
         if (!categoriesTableBody) return;
         categoriesTableBody.innerHTML = '';
-        if (state.categories.length === 0) { categoriesTableBody.innerHTML = '<tr><td colspan="4">لا توجد فئات.</td></tr>'; return; }
+        if (state.categories.length === 0) { categoriesTableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">لا توجد فئات.</td></tr>'; return; }
         state.categories.forEach((cat, index) => {
             const productCount = state.products.filter(p => p.categoryId === cat.id).length;
             const row = categoriesTableBody.insertRow();
@@ -1365,7 +1393,7 @@
     if(document.getElementById('addProductBtn')) {
         document.getElementById('addProductBtn').addEventListener('click', () => {
             const categoryOptions = state.categories.map(c => ({ value: c.id, text: c.name }));
-            if (categoryOptions.length === 0) { showToast('أضف فئة أولاً.', 'error'); showPage('categories'); return; }
+            if (categoryOptions.length === 0) { showToast('يجب إضافة فئة منتجات أولاً.', 'error'); showPage('categories'); return; }
             const fields = [
                 { id: 'productName', name: 'name', label: 'اسم المنتج:', type: 'text', required: true },
                 { id: 'productCategoryId', name: 'categoryId', label: 'الفئة:', type: 'select', options: [{value:'', text:'اختر فئة'}, ...categoryOptions], required: true },
@@ -1382,8 +1410,8 @@
     function handleSaveProduct(productData) {
         productData.price = parseFloat(productData.price);
         productData.costPrice = parseFloat(productData.costPrice || 0);
-        productData.quantity = parseInt(productData.quantity);
-        productData.reorderLimit = parseInt(productData.reorderLimit || 10);
+        productData.quantity = parseInt(productData.quantity, 10);
+        productData.reorderLimit = parseInt(productData.reorderLimit || 10, 10);
         if (productData.id) {
             const index = state.products.findIndex(p => p.id === productData.id);
             if (index !== -1) state.products[index] = { ...state.products[index], ...productData };
@@ -1393,7 +1421,7 @@
     function renderProductsTable() {
         if (!productsTableBody) return;
         productsTableBody.innerHTML = '';
-        if (state.products.length === 0) { productsTableBody.innerHTML = '<tr><td colspan="8">لا توجد منتجات.</td></tr>'; return; }
+        if (state.products.length === 0) { productsTableBody.innerHTML = '<tr><td colspan="8" style="text-align:center;">لا توجد منتجات.</td></tr>'; return; }
         state.products.forEach((product, index) => {
             const category = state.categories.find(c => c.id === product.categoryId);
             const row = productsTableBody.insertRow();
@@ -1426,7 +1454,7 @@
         }
     }
     function confirmDeleteProduct(id) {
-        showConfirmModal('هل تريد حذف هذا المنتج؟', () => deleteProduct(id));
+        showConfirmModal('هل تريد حذف هذا المنتج؟ سيتم حذفه من النظام بشكل نهائي.', () => deleteProduct(id));
     }
     function deleteProduct(id) {
         state.products = state.products.filter(p => p.id !== id);
@@ -1438,12 +1466,12 @@
     function renderInventoryTable() {
         if (!inventoryTableBody) return;
         inventoryTableBody.innerHTML = '';
-        if (state.products.length === 0) { inventoryTableBody.innerHTML = '<tr><td colspan="6">لا توجد منتجات.</td></tr>'; return; }
+        if (state.products.length === 0) { inventoryTableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">لا توجد منتجات.</td></tr>'; return; }
         const sortedProducts = [...state.products].sort((a,b) => a.name.localeCompare(b.name));
         sortedProducts.forEach((product, index) => {
             const row = inventoryTableBody.insertRow();
             let statusClass = 'badge-success'; let statusText = 'متوفر';
-            if (product.quantity === 0) { statusClass = 'badge-danger'; statusText = 'نفذ المخزون'; }
+            if (product.quantity <= 0) { statusClass = 'badge-danger'; statusText = 'نفذ المخزون'; }
             else if (product.quantity <= (product.reorderLimit || 0)) { statusClass = 'badge-warning'; statusText = 'منخفض'; }
             const inventoryValue = (product.costPrice || 0) * product.quantity;
             row.innerHTML = `<td>${index + 1}</td><td>${product.name}</td><td>${product.quantity}</td>
@@ -1477,7 +1505,7 @@
         customersTableBody.innerHTML = '';
         const posCustomerSelect = document.getElementById('posCustomerSelect');
         if(posCustomerSelect) posCustomerSelect.innerHTML = '<option value="">-- عميل عام --</option>';
-        if (state.customers.length === 0) { customersTableBody.innerHTML = '<tr><td colspan="7">لا يوجد عملاء.</td></tr>'; return; }
+        if (state.customers.length === 0) { customersTableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">لا يوجد عملاء.</td></tr>'; return; }
         state.customers.forEach((customer, index) => {
             const row = customersTableBody.insertRow();
             const customerSales = state.sales.filter(s => s.customerId === customer.id);
@@ -1508,7 +1536,7 @@
     }
     function confirmDeleteCustomer(id) {
         if (state.sales.some(s => s.customerId === id)) {
-            showConfirmModal('هذا العميل لديه مبيعات. حذفه سيجعل المبيعات "عميل عام". متابعة؟', () => deleteCustomer(id), 'تحذير');
+            showConfirmModal('هذا العميل لديه مبيعات مسجلة. حذفه سيجعل هذه المبيعات تابعة لـ "عميل عام". هل تريد المتابعة؟', () => deleteCustomer(id), 'تحذير');
         } else { showConfirmModal('هل تريد حذف هذا العميل؟', () => deleteCustomer(id)); }
     }
     function deleteCustomer(id) {
@@ -1554,7 +1582,7 @@
             );
             if (matchedProducts.length > 0) {
                 const ul = document.createElement('ul');
-                matchedProducts.forEach(product => {
+                matchedProducts.slice(0, 10).forEach(product => { // Limit to 10 results for performance
                     const li = document.createElement('li');
                     li.innerHTML = `<div>${product.name}</div><div class="stock">المتوفر: ${product.quantity}, السعر: ${formatCurrency(product.price)}</div>`;
                     li.onclick = () => addProductToCart(product.id);
@@ -1574,7 +1602,7 @@
             if (existingCartItem.quantityInCart < product.quantity) existingCartItem.quantityInCart++;
             else { showToast('لا يمكن إضافة كمية أكبر من المتوفر.', 'error'); return; }
         } else { state.currentCart.push({ ...structuredClone(product), quantityInCart: 1 }); }
-        if (posProductSearchInput) posProductSearchInput.value = '';
+        if (posProductSearchInput) { posProductSearchInput.value = ''; posProductSearchInput.focus(); }
         if (posProductSearchResultsDiv) posProductSearchResultsDiv.innerHTML = '';
         renderPosCart();
     }
@@ -1600,14 +1628,16 @@
         posCartTableBody.innerHTML = ''; let subtotal = 0;
         if (state.currentCart.length === 0) {
             posCartTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">السلة فارغة.</td></tr>';
+            completeSaleBtn.disabled = true;
         } else {
+            completeSaleBtn.disabled = false;
             state.currentCart.forEach(item => {
                 const itemTotal = item.price * item.quantityInCart; subtotal += itemTotal;
                 const row = posCartTableBody.insertRow();
                 row.innerHTML = `<td>${item.name}</td>
                     <td>
                         <button class="small" onclick="updateCartItemQuantity('${item.id}', -1)">-</button>
-                        ${item.quantityInCart}
+                        <span style="margin: 0 5px; display: inline-block; min-width: 20px; text-align: center;">${item.quantityInCart}</span>
                         <button class="small" onclick="updateCartItemQuantity('${item.id}', 1)">+</button>
                     </td>
                     <td>${formatCurrency(item.price)}</td><td>${formatCurrency(itemTotal)}</td>
@@ -1621,14 +1651,14 @@
     }
     if(clearCartBtn) {
         clearCartBtn.addEventListener('click', () => {
-            if (state.currentCart.length > 0) showConfirmModal('هل تريد إفراغ السلة؟', () => {
+            if (state.currentCart.length > 0) showConfirmModal('هل أنت متأكد من رغبتك في إفراغ السلة؟', () => {
                 state.currentCart = []; renderPosCart(); showToast('تم إفراغ السلة.');
             });
         });
     }
     if(completeSaleBtn) {
         completeSaleBtn.addEventListener('click', () => {
-            if (state.currentCart.length === 0) { showToast('السلة فارغة.', 'error'); return; }
+            if (state.currentCart.length === 0) { showToast('السلة فارغة. لا يمكن إتمام البيع.', 'error'); return; }
             const saleId = 'INV-' + generateId().substring(0,6).toUpperCase();
             const saleDate = new Date(); let saleSubtotal = 0;
             const selectedCustomerId = document.getElementById('posCustomerSelect')?.value;
@@ -1699,7 +1729,7 @@
         if (startDate) { startDate.setHours(0,0,0,0); filteredSales = filteredSales.filter(sale => new Date(sale.date) >= startDate); }
         if (endDate) { endDate.setHours(23,59,59,999); filteredSales = filteredSales.filter(sale => new Date(sale.date) <= endDate); }
         filteredSales.sort((a,b) => new Date(b.date) - new Date(a.date));
-        if (filteredSales.length === 0) { salesReportTableBody.innerHTML = `<tr><td colspan="7">لا توجد مبيعات تطابق الفلتر.</td></tr>`; return; }
+        if (filteredSales.length === 0) { salesReportTableBody.innerHTML = `<tr><td colspan="7" style="text-align:center;">لا توجد مبيعات تطابق الفلتر.</td></tr>`; return; }
         filteredSales.forEach(sale => {
             const customer = sale.customerId ? state.customers.find(c => c.id === sale.customerId) : null;
             const row = salesReportTableBody.insertRow();
@@ -1758,7 +1788,7 @@
         return `
             ${logoUrl ? `<div style="text-align:center;margin-bottom:10px;"><img src="${logoUrl}" alt="شعار" style="max-height:80px;max-width:200px;"></div>` : ''}
             <div class="invoice-header" style="text-align:center;margin-bottom:20px;">
-                <h2>${storeName}</h2><p>${address}</p><p>الهاتف: ${phone} ${email ? `| البريد: ${email}` : ''}</p><hr><h3>فاتورة مبيعات</h3>
+                <h2>${storeName || 'المحل التجاري'}</h2><p>${address || ''}</p><p>${phone ? `الهاتف: ${phone}`:''} ${email ? `| البريد: ${email}` : ''}</p><hr><h3>فاتورة مبيعات</h3>
             </div>
             <div style="margin-bottom:15px;">
                 <p><strong>رقم الفاتورة:</strong> ${sale.id}</p><p><strong>التاريخ:</strong> ${formatDate(sale.date)}</p>
@@ -1768,9 +1798,9 @@
             </div>
             <table><thead><tr><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr></thead><tbody>${itemsHtml}</tbody></table>
             <div class="invoice-summary" style="margin-top:20px;text-align:left;padding-right:10px;">
-                <p style="text-align:right;"><strong>الإجمالي الفرعي:</strong> ${parseFloat(sale.subtotalAmount).toFixed(2)} ${sym}</p>
-                <p style="text-align:right;"><strong>الضريبة (${(state.taxRate * 100).toFixed(0)}%):</strong> ${parseFloat(sale.taxAmount).toFixed(2)} ${sym}</p>
-                <p style="text-align:right;"><strong>الإجمالي الكلي:</strong> ${parseFloat(sale.totalAmount).toFixed(2)} ${sym}</p>
+                <p><strong>الإجمالي الفرعي:</strong> ${parseFloat(sale.subtotalAmount).toFixed(2)} ${sym}</p>
+                <p><strong>الضريبة (${(state.taxRate * 100).toFixed(0)}%):</strong> ${parseFloat(sale.taxAmount).toFixed(2)} ${sym}</p>
+                <p><strong>الإجمالي الكلي:</strong> ${parseFloat(sale.totalAmount).toFixed(2)} ${sym}</p>
             </div>
             <div style="text-align:center;margin-top:30px;font-size:0.9em;"><p>شكراً لتعاملكم معنا!</p>${storeName ? `<p>${storeName}</p>`:''}</div>`;
     }
@@ -1779,7 +1809,10 @@
         if (!sale) { showToast('الفاتورة غير موجودة.', 'error'); return; }
         const invoiceHtmlContent = generateInvoiceHTML(sale);
         const invoiceToPrintDiv = document.getElementById('invoiceToPrint');
-        if(invoiceToPrintDiv) { invoiceToPrintDiv.innerHTML = invoiceHtmlContent; window.print(); }
+        if(invoiceToPrintDiv) {
+            invoiceToPrintDiv.innerHTML = invoiceHtmlContent;
+            window.print();
+        }
     }
     function handleEmailInvoice(saleId, customerEmail) {
         const sale = state.sales.find(s => s.id === saleId);
@@ -1796,7 +1829,7 @@
         emailBody += `الإجمالي الكلي: ${parseFloat(sale.totalAmount).toFixed(2)} ${sym}\n\nمع تحيات فريق ${storeName}.\n\nملاحظة: هذه رسالة آلية.`;
         const mailtoLink = `mailto:${customerEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
         const newWindow = window.open(mailtoLink, '_blank');
-        if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') showToast('تعذر فتح برنامج البريد.', 'error');
+        if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') showToast('تعذر فتح برنامج البريد. قد تحتاج للسماح بالنوافذ المنبثقة.', 'error', 5000);
         else showToast('يرجى إكمال الإرسال من برنامج البريد.', 'success');
         const emailGroup = document.getElementById('emailInvoiceInputGroup'); if(emailGroup) emailGroup.style.display = 'none';
         const emailInput = document.getElementById('customerEmailForInvoice'); if(emailInput) emailInput.value = '';
@@ -1809,8 +1842,8 @@
         if(document.getElementById('total-customers-stat')) document.getElementById('total-customers-stat').textContent = state.customers.length;
         if(document.getElementById('total-suppliers-stat')) document.getElementById('total-suppliers-stat').textContent = state.suppliers.length;
 
-        const todayStart = new Date(new Date().setHours(0,0,0,0));
-        const todayEnd = new Date(new Date().setHours(23,59,59,999));
+        const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0);
+        const todayEnd = new Date(); todayEnd.setHours(23, 59, 59, 999);
         const todaySales = state.sales.filter(s => new Date(s.date) >= todayStart && new Date(s.date) <= todayEnd);
         const totalSalesTodayAmount = todaySales.reduce((sum, sale) => sum + sale.totalAmount, 0);
         if(document.getElementById('total-sales-today-stat')) document.getElementById('total-sales-today-stat').textContent = formatCurrency(totalSalesTodayAmount);
@@ -1820,8 +1853,10 @@
             document.getElementById('low-stock-products-stat').textContent = lowStockCount;
         }
         if(document.getElementById('total-expenses-month-stat')) {
-            const currentMonth = new Date().getMonth(); const currentYear = new Date().getFullYear();
-            const monthExpenses = state.expenses.filter(exp => { const d = new Date(exp.date); return d.getMonth() === currentMonth && d.getFullYear() === currentYear; });
+            const now = new Date();
+            const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+            const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+            const monthExpenses = state.expenses.filter(exp => { const d = new Date(exp.date); return d >= monthStart && d <= monthEnd; });
             const totalMonthExpensesAmount = monthExpenses.reduce((sum, exp) => sum + exp.amount, 0);
             document.getElementById('total-expenses-month-stat').textContent = formatCurrency(totalMonthExpensesAmount);
         }
@@ -1881,7 +1916,7 @@
     function renderSuppliersTable() {
         if (!suppliersTableBody) return;
         suppliersTableBody.innerHTML = '';
-        if (state.suppliers.length === 0) { suppliersTableBody.innerHTML = '<tr><td colspan="6">لا يوجد موردون.</td></tr>'; return; }
+        if (state.suppliers.length === 0) { suppliersTableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">لا يوجد موردون.</td></tr>'; return; }
         state.suppliers.forEach((supplier, index) => {
             const row = suppliersTableBody.insertRow();
             row.innerHTML = `<td>${index + 1}</td><td>${supplier.name}</td><td>${supplier.phone || '-'}</td>
@@ -1903,7 +1938,7 @@
         ], supplier, handleSaveSupplier, 'تعديل المورد');
     }
     function confirmDeleteSupplier(id) {
-        if (state.purchaseOrders.some(po => po.supplierId === id)) { showToast('لا يمكن حذف المورد، مستخدم في طلبات شراء.', 'error'); return; }
+        if (state.purchaseOrders.some(po => po.supplierId === id)) { showToast('لا يمكن حذف المورد، مرتبط بطلبات شراء.', 'error'); return; }
         showConfirmModal('هل تريد حذف هذا المورد؟', () => deleteSupplier(id));
     }
     function deleteSupplier(id) {
@@ -1922,6 +1957,7 @@
             document.getElementById('purchaseOrderModalTitle').textContent = 'إنشاء طلب شراء جديد';
             populatePOSupplierSelect(); currentPOItems = []; renderPOItemsTable();
             document.getElementById('purchaseOrderForm').reset();
+            document.getElementById('poExpectedDate').value = formatDateForInput(new Date());
             if(purchaseOrderModalElement.dataset.editId) delete purchaseOrderModalElement.dataset.editId;
             openModal(purchaseOrderModalElement);
         });
@@ -1946,7 +1982,7 @@
             if (matchedProducts.length > 0) {
                 const ul = document.createElement('ul');
                 ul.style.listStyle='none'; ul.style.padding='0'; ul.style.margin='0';
-                matchedProducts.forEach(product => {
+                matchedProducts.slice(0, 10).forEach(product => {
                     const li = document.createElement('li');
                     li.innerHTML = `<div>${product.name} (تكلفة: ${formatCurrency(product.costPrice || 0)})</div>`;
                     li.style.padding='8px'; li.style.cursor='pointer'; li.style.borderBottom='1px solid #eee';
@@ -1963,16 +1999,18 @@
         if (existingItem) existingItem.quantity++;
         else currentPOItems.push({ productId: product.id, name: product.name, quantity: 1, costPrice: product.costPrice || 0 });
         renderPOItemsTable();
-        if (poProductSearchInput) poProductSearchInput.value = '';
+        if (poProductSearchInput) { poProductSearchInput.value = ''; poProductSearchInput.focus(); }
         if (poProductSearchResultsList) poProductSearchResultsList.innerHTML = '';
     }
     function updatePOItem(productId, field, value) {
         const item = currentPOItems.find(i => i.productId === productId);
         if (item) {
             const numValue = parseFloat(value);
-            if (field === 'quantity' && numValue <= 0) currentPOItems = currentPOItems.filter(i => i.productId !== productId);
-            else if (field === 'costPrice' && numValue < 0) item[field] = 0; // Prevent negative cost
-            else item[field] = numValue;
+            if (!isNaN(numValue)) {
+                if (field === 'quantity' && numValue <= 0) removeProductFromPO(productId);
+                else if (field === 'costPrice' && numValue < 0) item[field] = 0;
+                else item[field] = numValue;
+            }
             renderPOItemsTable();
         }
     }
@@ -2000,8 +2038,8 @@
             e.preventDefault();
             const formData = new FormData(purchaseOrderForm);
             const poData = Object.fromEntries(formData.entries());
-            if (currentPOItems.length === 0) { showToast("أضف منتجات للطلب.", "error"); return; }
-            if (!poData.supplierId) { showToast("اختر موردًا.", "error"); return; }
+            if (currentPOItems.length === 0) { showToast("يجب إضافة منتجات إلى الطلب أولاً.", "error"); return; }
+            if (!poData.supplierId) { showToast("يجب اختيار مورد.", "error"); return; }
             const totalAmount = currentPOItems.reduce((sum, item) => sum + (item.costPrice || 0) * item.quantity, 0);
             const editId = purchaseOrderModalElement.dataset.editId;
             if (editId) {
@@ -2023,7 +2061,7 @@
         });
     }
     function getPOStatusText(status) {
-        const statuses = { pending: 'انتظار', received_partial: 'مستلم جزئيًا', received_full: 'مستلم كليًا', cancelled: 'ملغي' };
+        const statuses = { pending: 'قيد الانتظار', received_partial: 'مستلم جزئيًا', received_full: 'مستلم بالكامل', cancelled: 'ملغي' };
         return statuses[status] || status;
     }
     function getPOStatusClass(status) {
@@ -2034,7 +2072,7 @@
         if (!purchaseOrdersTableBody) return;
         purchaseOrdersTableBody.innerHTML = '';
         const sortedPOs = Array.isArray(state.purchaseOrders) ? [...state.purchaseOrders].sort((a,b) => new Date(b.date) - new Date(a.date)) : [];
-        if (sortedPOs.length === 0) { purchaseOrdersTableBody.innerHTML = '<tr><td colspan="7">لا توجد طلبات شراء.</td></tr>'; return; }
+        if (sortedPOs.length === 0) { purchaseOrdersTableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">لا توجد طلبات شراء.</td></tr>'; return; }
         sortedPOs.forEach(po => {
             const supplier = state.suppliers.find(s => s.id === po.supplierId);
             const row = purchaseOrdersTableBody.insertRow();
@@ -2068,17 +2106,17 @@
                            <p><strong>الاستلام المتوقع:</strong> ${po.expectedDate ? formatDate(po.expectedDate) : '-'}</p>
                            <p><strong>الحالة:</strong> <span class="badge ${getPOStatusClass(po.status)}">${getPOStatusText(po.status)}</span></p>
                            <p><strong>الملاحظات:</strong> ${po.notes || '-'}</p>
-                           <h4>الأصناف:</h4><ul>`;
+                           <h4>الأصناف المطلوبة:</h4><div class="table-responsive-wrapper"><table style="font-size: 0.9em;"><thead><tr><th>المنتج</th><th>الكمية</th><th>تكلفة الوحدة</th><th>الإجمالي</th></tr></thead><tbody>`;
         (po.items || []).forEach(item => {
-            detailsHtml += `<li>${item.name} (الكمية: ${item.quantity}, تكلفة الوحدة: ${formatCurrency(item.costPrice || 0)}, الإجمالي: ${formatCurrency((item.costPrice || 0) * item.quantity)})</li>`;
+            detailsHtml += `<tr><td>${item.name}</td><td>${item.quantity}</td><td>${formatCurrency(item.costPrice || 0)}</td><td>${formatCurrency((item.costPrice || 0) * item.quantity)}</td></tr>`;
         });
-        detailsHtml += `</ul><hr><p style="text-align:left;font-weight:bold;">الإجمالي الكلي للطلب: ${formatCurrency(po.totalAmount || 0)}</p>`;
+        detailsHtml += `</tbody></table></div><hr><p style="text-align:left;font-weight:bold;font-size:1.1em;">الإجمالي الكلي للطلب: ${formatCurrency(po.totalAmount || 0)}</p>`;
         document.getElementById('viewPoId').textContent = po.id;
         document.getElementById('viewPoDetailsBody').innerHTML = detailsHtml;
         openModal(viewPurchaseOrderModalElement);
     }
     function confirmReceivePO(poId) {
-        showConfirmModal(`تأكيد استلام طلب الشراء ${poId}؟ سيتم تحديث المخزون.`, () => receivePurchaseOrder(poId), 'تأكيد الاستلام');
+        showConfirmModal(`هل تؤكد استلام طلب الشراء ${poId}؟ سيتم تحديث المخزون بهذه الكميات.`, () => receivePurchaseOrder(poId), 'تأكيد الاستلام');
     }
     function receivePurchaseOrder(poId) {
         const po = state.purchaseOrders.find(p => p.id === poId);
@@ -2087,17 +2125,16 @@
             const product = state.products.find(p => p.id === item.productId);
             if (product) {
                 product.quantity += item.quantity;
-                // Optionally, update product's costPrice based on this PO.
-                // For simplicity, we're not doing weighted average here.
-                // product.costPrice = item.costPrice; // This would overwrite.
+                // Optional: Update product's costPrice based on this PO (e.g., to the latest price)
+                product.costPrice = item.costPrice;
             }
         });
         po.status = 'received_full'; po.receivedDate = new Date();
-        saveState(); renderPurchaseOrdersTable(); renderInventoryTable(); renderDashboard();
+        saveState(); renderPurchaseOrdersTable(); renderInventoryTable(); renderDashboard(); renderProductsTable();
         showToast(`تم استلام طلب الشراء ${poId} وتحديث المخزون.`, "success");
     }
     function confirmCancelPO(poId) {
-         showConfirmModal(`هل تريد إلغاء طلب الشراء ${poId}؟`, () => cancelPurchaseOrder(poId), 'تأكيد الإلغاء');
+         showConfirmModal(`هل تريد إلغاء طلب الشراء ${poId}؟ لا يمكن التراجع عن هذا الإجراء.`, () => cancelPurchaseOrder(poId), 'تأكيد الإلغاء');
     }
     function cancelPurchaseOrder(poId) {
         const po = state.purchaseOrders.find(p => p.id === poId);
@@ -2115,8 +2152,8 @@
     const expenseEndDateInput = document.getElementById('expenseEndDate');
     const totalFilteredExpensesSpan = document.getElementById('totalFilteredExpenses');
     const expenseCategories = [
-        { value: "rent", text: "إيجار" }, { value: "utilities", text: "فواتير" }, { value: "salaries", text: "رواتب" },
-        { value: "supplies", text: "مستلزمات" }, { value: "marketing", text: "تسويق" },
+        { value: "rent", text: "إيجار" }, { value: "utilities", text: "فواتير وخدمات" }, { value: "salaries", text: "رواتب" },
+        { value: "supplies", text: "مستلزمات مكتبية" }, { value: "marketing", text: "تسويق وإعلان" },
         { value: "maintenance", text: "صيانة" }, { value: "other", text: "أخرى" }
     ];
     if(addExpenseBtn) {
@@ -2127,12 +2164,11 @@
                 { id: 'expenseCategory', name: 'category', label: 'الفئة:', type: 'select', options: [{value: '', text: 'اختر فئة'}, ...expenseCategories], required: true },
                 { id: 'expenseAmount', name: 'amount', label: `المبلغ (${state.currency.symbol}):`, type: 'number', step: '0.01', min: 0.01, required: true },
                 { id: 'expenseNotes', name: 'notes', label: 'ملاحظات:', type: 'textarea' }
-            ], { date: formatDateForInput(new Date()) }, handleSaveExpense, 'إضافة مصروف جديد');
+            ], { date: new Date().toISOString() }, handleSaveExpense, 'إضافة مصروف جديد');
         });
     }
     function handleSaveExpense(expenseData) {
         expenseData.amount = parseFloat(expenseData.amount);
-        // expenseData.date = new Date(expenseData.date); // Handled by buildForm
         if (expenseData.id) {
             const index = state.expenses.findIndex(exp => exp.id === expenseData.id);
             if (index !== -1) state.expenses[index] = { ...state.expenses[index], ...expenseData };
@@ -2149,7 +2185,7 @@
         if (endDate) { endDate.setHours(23,59,59,999); filteredExpenses = filteredExpenses.filter(exp => new Date(exp.date) <= endDate); }
         filteredExpenses.sort((a,b) => new Date(b.date) - new Date(a.date));
         let currentTotalExpenses = 0;
-        if (filteredExpenses.length === 0) { expensesTableBody.innerHTML = '<tr><td colspan="6">لا توجد مصروفات تطابق الفلتر.</td></tr>'; }
+        if (filteredExpenses.length === 0) { expensesTableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">لا توجد مصروفات تطابق الفلتر.</td></tr>'; }
         else {
             filteredExpenses.forEach((expense, index) => {
                 const row = expensesTableBody.insertRow();
@@ -2181,7 +2217,7 @@
             { id: 'expenseCategory', name: 'category', label: 'الفئة:', type: 'select', options: [{value: '', text: 'اختر فئة'}, ...expenseCategories], required: true },
             { id: 'expenseAmount', name: 'amount', label: `المبلغ (${state.currency.symbol}):`, type: 'number', step: '0.01', min: 0.01, required: true },
             { id: 'expenseNotes', name: 'notes', label: 'ملاحظات:', type: 'textarea' }
-        ], {...expense, date: new Date(expense.date)}, handleSaveExpense, 'تعديل المصروف');
+        ], {...expense, date: new Date(expense.date).toISOString()}, handleSaveExpense, 'تعديل المصروف');
     }
     function confirmDeleteExpense(id) {
         showConfirmModal('هل تريد حذف هذا المصروف؟', () => deleteExpense(id));
@@ -2194,6 +2230,8 @@
     // --- Responsive Sidebar Toggle ---
     const menuToggleBtn = document.getElementById('menuToggleBtn');
     const sidebarElement = document.getElementById('sidebar');
+    const mainContentElement = document.getElementById('mainContent');
+
     if (menuToggleBtn && sidebarElement) {
         const iconMenu = menuToggleBtn.querySelector('.icon-menu');
         const iconClose = menuToggleBtn.querySelector('.icon-close');
@@ -2203,14 +2241,16 @@
             if (iconMenu) iconMenu.style.display = isOpen ? 'none' : 'block';
             if (iconClose) iconClose.style.display = isOpen ? 'block' : 'none';
         });
+        const closeSidebarOnContentClick = () => {
+             if (window.innerWidth < 768 && sidebarElement.classList.contains('open')) {
+                sidebarElement.classList.remove('open');
+                if (iconMenu) iconMenu.style.display = 'block';
+                if (iconClose) iconClose.style.display = 'none';
+            }
+        };
+        mainContentElement.addEventListener('click', closeSidebarOnContentClick);
         sidebarElement.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-                if (window.innerWidth < 768 && sidebarElement.classList.contains('open')) {
-                    sidebarElement.classList.remove('open');
-                    if (iconMenu) iconMenu.style.display = 'block';
-                    if (iconClose) iconClose.style.display = 'none';
-                }
-            });
+            link.addEventListener('click', closeSidebarOnContentClick);
         });
     }
 
