@@ -246,9 +246,9 @@
         button.success:hover, .button.success:hover { background-color: #27ae60; }
         button.small { padding: 6px 10px; font-size: 0.8em;}
 
+        .action-buttons { display: flex; flex-wrap: wrap; gap: 5px; justify-content: flex-start; }
         .action-buttons button { margin-top: 0; margin-bottom: 5px; }
-        .action-buttons { display: flex; flex-wrap: wrap; gap: 5px; }
-
+        
         .modal {
             display: none; position: fixed; z-index: 1000;
             left: 0; top: 0; width: 100%; height: 100%;
@@ -304,7 +304,12 @@
             overflow-y: auto;
             background-color: var(--white); border-radius: 4px;
             margin-top: 5px;
+            position: absolute;
+            width: 100%;
+            z-index: 100;
         }
+        .pos-search-wrapper { position: relative; }
+
         #posProductSearchResults ul { list-style: none; padding: 0; margin: 0;}
         #posProductSearchResults li {
             padding: 8px;
@@ -366,7 +371,7 @@
         #quoteItemsTable td input[type="number"],
         #quoteItemsTable td input[type="text"]
         {
-            width: 80px;
+            max-width: 90px;
             padding: 5px;
             font-size: 0.9em;
             text-align: center;
@@ -471,11 +476,12 @@
                 padding: 8px 12px;
                 width: 100%;
                 margin-top: 10px;
+                margin-left: 0;
             }
-            #pos > div:first-of-type { /* POS layout adjustment */
+            #pos > .d-flex { /* POS layout adjustment */
                 flex-direction: column;
             }
-            #pos > div:first-of-type > div:first-child { /* POS search and cart */
+            #pos > .d-flex > div:first-child { /* POS search and cart */
                 margin-bottom: 20px;
             }
             .stats-cards {
@@ -511,7 +517,7 @@
     </style>
 </head>
 <body>
-    <button class="menu-toggle" id="menuToggleBtn">
+    <button class="menu-toggle" id="menuToggleBtn" aria-label="تبديل القائمة" aria-expanded="false" aria-controls="sidebar">
         <span class="icon-menu">☰</span>
         <span class="icon-close">✕</span>
     </button>
@@ -580,14 +586,14 @@
                 <h3>أحدث 5 مبيعات</h3>
                 <div class="table-responsive-wrapper">
                     <table id="latest-sales-table">
-                        <thead><tr><th>رقم الفاتورة</th><th>التاريخ</th><th>العميل</th><th>الإجمالي</th><th>الإجراء</th></tr></thead>
+                        <thead><tr><th scope="col">رقم الفاتورة</th><th scope="col">التاريخ</th><th scope="col">العميل</th><th scope="col">الإجمالي</th><th scope="col">الإجراء</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
                  <h3 class="mt-2">أحدث 5 طلبات شراء</h3>
                 <div class="table-responsive-wrapper">
                     <table id="latest-purchase-orders-table">
-                        <thead><tr><th>رقم الطلب</th><th>المورد</th><th>تاريخ الطلب</th><th>الحالة</th><th>الإجمالي</th><th>الإجراء</th></tr></thead>
+                        <thead><tr><th scope="col">رقم الطلب</th><th scope="col">المورد</th><th scope="col">تاريخ الطلب</th><th scope="col">الحالة</th><th scope="col">الإجمالي</th><th scope="col">الإجراء</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
@@ -596,9 +602,9 @@
             <!-- POS Page -->
             <section id="pos" class="page">
                 <div class="page-header"><h1>نقطة البيع (POS)</h1></div>
-                <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+                <div class="d-flex" style="flex-wrap: wrap; gap: 20px;">
                     <div style="flex: 2; min-width: 300px;">
-                        <div class="form-group">
+                        <div class="form-group pos-search-wrapper">
                             <label for="posProductSearch">بحث عن منتج (بالاسم، الكود، الباركود):</label>
                             <input type="text" id="posProductSearch" placeholder="ابدأ الكتابة للبحث...">
                             <div id="posProductSearchResults"></div>
@@ -606,7 +612,7 @@
                         <h3>فاتورة حالية</h3>
                         <div class="table-responsive-wrapper">
                             <table id="posCartTable">
-                                <thead><tr><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th><th>إجراء</th></tr></thead>
+                                <thead><tr><th scope="col">المنتج</th><th scope="col">الكمية</th><th scope="col">السعر</th><th scope="col">الإجمالي</th><th scope="col">إجراء</th></tr></thead>
                                 <tbody></tbody>
                             </table>
                         </div>
@@ -620,7 +626,7 @@
                             </select>
                         </div>
                         <hr>
-                        <div style="text-align: left; margin-top: 10px;">
+                        <div class="text-left mt-1">
                             <h4>الإجمالي الفرعي: <span id="posSubtotalAmount">0.00</span></h4>
                             <h4>الضريبة (<span id="posTaxRateDisplay">0</span>%): <span id="posTaxAmount">0.00</span></h4>
                             <h3>الإجمالي الكلي: <span id="posTotalAmount">0.00</span></h3>
@@ -629,14 +635,14 @@
                             <label for="posPaymentMethod">طريقة الدفع:</label>
                             <select id="posPaymentMethod">
                                 <option value="cash">نقداً</option>
-                                <option value="card">بطاقة ائتمان</option>
+                                <option value="card">بطاقة ائتمan</option>
                                 <option value="debt">آجل / دين</option>
                                 <option value="online">دفع إلكتروني</option>
                                 <option value="other">أخرى</option>
                             </select>
                         </div>
-                        <button id="completeSaleBtn" class="primary" style="width:100%; margin-top:10px; padding: 12px;"> <span class="icon">💳</span> إتمام البيع والدفع</button>
-                        <button id="clearCartBtn" class="danger" style="width:100%; margin-top:10px;"> <span class="icon">🗑️</span> إفراغ السلة</button>
+                        <button id="completeSaleBtn" class="primary" style="width:100%; margin-top:10px; padding: 12px; margin-left: 0;"> <span class="icon">💳</span> إتمام البيع والدفع</button>
+                        <button id="clearCartBtn" class="danger" style="width:100%; margin-top:10px; margin-left: 0;"> <span class="icon">🗑️</span> إفراغ السلة</button>
                     </div>
                 </div>
             </section>
@@ -649,7 +655,7 @@
                 </div>
                 <div class="table-responsive-wrapper">
                     <table id="productsTable">
-                        <thead><tr><th>#</th><th>المنتج</th><th>الفئة</th><th>سعر البيع</th><th>تكلفة الشراء</th><th>الكمية</th><th>الوحدة</th><th>حد الطلب</th><th>إجراءات</th></tr></thead>
+                        <thead><tr><th scope="col">#</th><th scope="col">المنتج</th><th scope="col">الفئة</th><th scope="col">سعر البيع</th><th scope="col">تكلفة الشراء</th><th scope="col">الكمية</th><th scope="col">الوحدة</th><th scope="col">حد الطلب</th><th scope="col">إجراءات</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
@@ -663,7 +669,7 @@
                 </div>
                 <div class="table-responsive-wrapper">
                     <table id="categoriesTable">
-                        <thead><tr><th>#</th><th>اسم الفئة</th><th>عدد المنتجات</th><th>إجراءات</th></tr></thead>
+                        <thead><tr><th scope="col">#</th><th scope="col">اسم الفئة</th><th scope="col">عدد المنتجات</th><th scope="col">إجراءات</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
@@ -674,7 +680,7 @@
                  <div class="page-header"><h1>إدارة المخزون</h1></div>
                 <div class="table-responsive-wrapper">
                     <table id="inventoryTable">
-                        <thead><tr><th>#</th><th>المنتج</th><th>الكمية الحالية</th><th>الوحدة</th><th>حد إعادة الطلب</th><th>الحالة</th><th>قيمة المخزون (بالتكلفة)</th></tr></thead>
+                        <thead><tr><th scope="col">#</th><th scope="col">المنتج</th><th scope="col">الكمية الحالية</th><th scope="col">الوحدة</th><th scope="col">حد إعادة الطلب</th><th scope="col">الحالة</th><th scope="col">قيمة المخزون (بالتكلفة)</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
@@ -684,7 +690,7 @@
             <section id="sales" class="page">
                 <div class="page-header"><h1>المبيعات والتقارير</h1></div>
                 <div class="form-group d-flex align-center" style="gap: 10px; flex-wrap:wrap;">
-                    <label for="reportDateRange" style="margin-bottom:0;">نطاق التاريخ:</label>
+                    <label for="reportStartDate" style="margin-bottom:0; white-space:nowrap;">نطاق التاريخ:</label>
                     <input type="date" id="reportStartDate" style="width:auto; min-width: 130px;">
                     <span>إلى</span>
                     <input type="date" id="reportEndDate" style="width:auto; min-width: 130px;">
@@ -693,7 +699,7 @@
                 </div>
                 <div class="table-responsive-wrapper">
                     <table id="salesReportTable">
-                        <thead><tr><th>رقم الفاتورة</th><th>التاريخ</th><th>العميل</th><th>الأصناف</th><th>طريقة الدفع</th><th>الإجمالي</th><th>تفاصيل</th></tr></thead>
+                        <thead><tr><th scope="col">رقم الفاتورة</th><th scope="col">التاريخ</th><th scope="col">العميل</th><th scope="col">الأصناف</th><th scope="col">طريقة الدفع</th><th scope="col">الإجمالي</th><th scope="col">تفاصيل</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
@@ -707,7 +713,7 @@
                 </div>
                 <div class="table-responsive-wrapper">
                     <table id="customersTable">
-                        <thead><tr><th>#</th><th>اسم العميل</th><th>الهاتف</th><th>البريد الإلكتروني</th><th>إجمالي المشتريات</th><th>الدين الحالي</th><th>آخر عملية شراء</th><th>إجراءات</th></tr></thead>
+                        <thead><tr><th scope="col">#</th><th scope="col">اسم العميل</th><th scope="col">الهاتف</th><th scope="col">البريد الإلكتروني</th><th scope="col">إجمالي المشتريات</th><th scope="col">الدين الحالي</th><th scope="col">آخر عملية شراء</th><th scope="col">إجراءات</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
@@ -722,10 +728,10 @@
                     <table id="customerDebtsTable">
                         <thead>
                             <tr>
-                                <th>اسم العميل</th>
-                                <th>إجمالي الدين</th>
-                                <th>آخر تحديث للدين</th>
-                                <th>إجراءات</th>
+                                <th scope="col">اسم العميل</th>
+                                <th scope="col">إجمالي الدين</th>
+                                <th scope="col">آخر تحديث للدين</th>
+                                <th scope="col">إجراءات</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -742,7 +748,7 @@
                 </div>
                 <div class="table-responsive-wrapper">
                     <table id="suppliersTable">
-                        <thead><tr><th>#</th><th>اسم المورد</th><th>الهاتف</th><th>البريد الإلكتروني</th><th>العنوان</th><th>إجراءات</th></tr></thead>
+                        <thead><tr><th scope="col">#</th><th scope="col">اسم المورد</th><th scope="col">الهاتف</th><th scope="col">البريد الإلكتروني</th><th scope="col">العنوان</th><th scope="col">إجراءات</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
@@ -756,7 +762,7 @@
                 </div>
                 <div class="table-responsive-wrapper">
                     <table id="purchaseOrdersTable">
-                        <thead><tr><th>رقم الطلب</th><th>المورد</th><th>تاريخ الطلب</th><th>تاريخ الاستلام المتوقع</th><th>الحالة</th><th>الإجمالي</th><th>إجراءات</th></tr></thead>
+                        <thead><tr><th scope="col">رقم الطلب</th><th scope="col">المورد</th><th scope="col">تاريخ الطلب</th><th scope="col">تاريخ الاستلام المتوقع</th><th scope="col">الحالة</th><th scope="col">الإجمالي</th><th scope="col">إجراءات</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
@@ -770,7 +776,7 @@
                 </div>
                 <div class="table-responsive-wrapper">
                     <table id="quotationsTable">
-                        <thead><tr><th>رقم العرض</th><th>العميل</th><th>التاريخ</th><th>الحالة</th><th>الإجمالي</th><th>إجراءات</th></tr></thead>
+                        <thead><tr><th scope="col">رقم العرض</th><th scope="col">العميل</th><th scope="col">التاريخ</th><th scope="col">الحالة</th><th scope="col">الإجمالي</th><th scope="col">إجراءات</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
@@ -783,7 +789,7 @@
                     <button id="addExpenseBtn" class="primary"><span class="icon">➕</span> إضافة مصروف جديد</button>
                 </div>
                  <div class="form-group d-flex align-center" style="gap: 10px; flex-wrap:wrap;">
-                    <label for="expenseDateRange" style="margin-bottom:0;">نطاق التاريخ:</label>
+                    <label for="expenseStartDate" style="margin-bottom:0; white-space:nowrap;">نطاق التاريخ:</label>
                     <input type="date" id="expenseStartDate" style="width:auto; min-width: 130px;">
                     <span>إلى</span>
                     <input type="date" id="expenseEndDate" style="width:auto; min-width: 130px;">
@@ -792,11 +798,11 @@
                 </div>
                 <div class="table-responsive-wrapper">
                     <table id="expensesTable">
-                        <thead><tr><th>#</th><th>التاريخ</th><th>الوصف/البند</th><th>الفئة</th><th>المبلغ</th><th>إجراءات</th></tr></thead>
+                        <thead><tr><th scope="col">#</th><th scope="col">التاريخ</th><th scope="col">الوصف/البند</th><th scope="col">الفئة</th><th scope="col">المبلغ</th><th scope="col">إجراءات</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
-                <div style="text-align:left; margin-top:15px;">
+                <div class="text-left mt-2">
                     <h3>إجمالي المصروفات للفترة المحددة: <span id="totalFilteredExpenses">0.00</span></h3>
                 </div>
             </section>
@@ -860,11 +866,11 @@
     </div>
 
     <!-- Generic Modal Structure -->
-    <div id="formModal" class="modal">
+    <div id="formModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="modalTitle">عنوان النافذة</h3>
-                <span class="close-button" data-modal-id="formModal">×</span>
+                <span class="close-button" data-modal-id="formModal" aria-label="إغلاق">×</span>
             </div>
             <form id="genericForm">
             </form>
@@ -872,11 +878,11 @@
     </div>
 
     <!-- View Sale Details Modal -->
-    <div id="saleDetailsModal" class="modal">
+    <div id="saleDetailsModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="detailsSaleModalTitle">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>تفاصيل الفاتورة رقم: <span id="detailsSaleId"></span></h3>
-                <span class="close-button" data-modal-id="saleDetailsModal">×</span>
+                <h3 id="detailsSaleModalTitle">تفاصيل الفاتورة رقم: <span id="detailsSaleId"></span></h3>
+                <span class="close-button" data-modal-id="saleDetailsModal" aria-label="إغلاق">×</span>
             </div>
             <p><strong>التاريخ:</strong> <span id="detailsSaleDate"></span></p>
             <p><strong>العميل:</strong> <span id="detailsSaleCustomer"></span></p>
@@ -884,12 +890,12 @@
             <h4>الأصناف:</h4>
             <div class="table-responsive-wrapper">
                 <table id="detailsSaleItemsTable">
-                    <thead><tr><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي الفرعي</th></tr></thead>
+                    <thead><tr><th scope="col">المنتج</th><th scope="col">الكمية</th><th scope="col">السعر</th><th scope="col">الإجمالي الفرعي</th></tr></thead>
                     <tbody></tbody>
                 </table>
             </div>
              <hr class="mt-2 mb-2">
-            <div style="text-align: left;">
+            <div class="text-left">
                 <p><strong>الإجمالي الفرعي:</strong> <span id="detailsSaleSubtotal"></span></p>
                 <p><strong>الضريبة:</strong> <span id="detailsSaleTax"></span></p>
                 <p><strong>الإجمالي الكلي:</strong> <span id="detailsSaleTotal"></span></p>
@@ -901,11 +907,11 @@
     </div>
 
     <!-- Sale Confirmation & Invoice Options Modal -->
-    <div id="saleConfirmationModal" class="modal">
+    <div id="saleConfirmationModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="saleConfirmationTitle">
         <div class="modal-content" style="max-width: 450px;">
             <div class="modal-header">
                 <h3 id="saleConfirmationTitle">تم البيع بنجاح!</h3>
-                <span class="close-button" data-modal-id="saleConfirmationModal">×</span>
+                <span class="close-button" data-modal-id="saleConfirmationModal" aria-label="إغلاق">×</span>
             </div>
             <div id="saleConfirmationBody" style="padding: 15px 0;">
                 <p>رقم الفاتورة: <strong id="confirmSaleId"></strong></p>
@@ -926,11 +932,11 @@
     </div>
 
     <!-- Custom Confirmation Modal -->
-    <div id="confirmModal" class="modal">
+    <div id="confirmModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
         <div class="modal-content" style="max-width: 400px;">
             <div class="modal-header">
                 <h3 id="confirmModalTitle">تأكيد الإجراء</h3>
-                <span class="close-button" data-modal-id="confirmModal">×</span>
+                <span class="close-button" data-modal-id="confirmModal" aria-label="إغلاق">×</span>
             </div>
             <div class="modal-body" style="padding: 15px 0;">
                 <p id="confirmModalMessage">هل أنت متأكد أنك تريد المتابعة؟</p>
@@ -943,11 +949,11 @@
     </div>
     
     <!-- Debt Payment Modal -->
-    <div id="debtPaymentModal" class="modal">
+    <div id="debtPaymentModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="debtPaymentModalTitle">
         <div class="modal-content" style="max-width: 450px;">
             <div class="modal-header">
-                <h3>تسديد دفعة دين</h3>
-                <span class="close-button" data-modal-id="debtPaymentModal">×</span>
+                <h3 id="debtPaymentModalTitle">تسديد دفعة دين</h3>
+                <span class="close-button" data-modal-id="debtPaymentModal" aria-label="إغلاق">×</span>
             </div>
             <form id="debtPaymentForm">
                 <p>العميل: <strong id="debtPaymentCustomerName"></strong></p>
@@ -967,14 +973,14 @@
 
 
     <!-- Purchase Order Modal -->
-    <div id="purchaseOrderModal" class="modal">
-        <div class="modal-content" style="max-width: 750px;"> <!-- Increased width for PO -->
+    <div id="purchaseOrderModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="purchaseOrderModalTitle">
+        <div class="modal-content" style="max-width: 750px;">
             <div class="modal-header">
                 <h3 id="purchaseOrderModalTitle">إنشاء طلب شراء</h3>
-                <span class="close-button" data-modal-id="purchaseOrderModal">×</span>
+                <span class="close-button" data-modal-id="purchaseOrderModal" aria-label="إغلاق">×</span>
             </div>
             <form id="purchaseOrderForm">
-                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                <div class="d-flex" style="gap: 15px; flex-wrap: wrap;">
                     <div class="form-group" style="flex: 1; min-width: 200px;">
                         <label for="poSupplierSelect">اختر المورد:</label>
                         <select id="poSupplierSelect" name="supplierId" required></select>
@@ -996,18 +1002,18 @@
                     <table id="poItemsTable" class="mt-1">
                         <thead>
                             <tr>
-                                <th>المنتج</th>
-                                <th>الكمية المطلوبة</th>
-                                <th>تكلفة الوحدة</th>
-                                <th>الإجمالي الفرعي</th>
-                                <th>إجراء</th>
+                                <th scope="col">المنتج</th>
+                                <th scope="col">الكمية المطلوبة</th>
+                                <th scope="col">تكلفة الوحدة</th>
+                                <th scope="col">الإجمالي الفرعي</th>
+                                <th scope="col">إجراء</th>
                             </tr>
                         </thead>
                         <tbody>
                         </tbody>
                     </table>
                 </div>
-                <div style="text-align: left; margin-top: 15px;">
+                <div class="text-left mt-2">
                     <h4>إجمالي الطلب: <span id="poTotalAmount">0.00</span></h4>
                 </div>
                  <div class="form-group">
@@ -1020,11 +1026,11 @@
     </div>
     
     <!-- Quotation Modal -->
-    <div id="quotationModal" class="modal">
+    <div id="quotationModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="quotationModalTitle">
         <div class="modal-content" style="max-width: 750px;">
             <div class="modal-header">
                 <h3 id="quotationModalTitle">إنشاء عرض سعر / فاتورة أولية</h3>
-                <span class="close-button" data-modal-id="quotationModal">×</span>
+                <span class="close-button" data-modal-id="quotationModal" aria-label="إغلاق">×</span>
             </div>
             <form id="quotationForm">
                 <div class="form-group">
@@ -1041,12 +1047,12 @@
                 <div class="table-responsive-wrapper">
                     <table id="quoteItemsTable" class="mt-1">
                         <thead>
-                            <tr><th>المنتج</th><th>الكمية</th><th>سعر الوحدة</th><th>الإجمالي الفرعي</th><th>إجراء</th></tr>
+                            <tr><th scope="col">المنتج</th><th scope="col">الكمية</th><th scope="col">سعر الوحدة</th><th scope="col">الإجمالي الفرعي</th><th scope="col">إجراء</th></tr>
                         </thead>
                         <tbody></tbody>
                     </table>
                 </div>
-                <div style="text-align: left; margin-top: 15px;">
+                <div class="text-left mt-2">
                     <h4>الإجمالي الفرعي: <span id="quoteSubtotalAmount">0.00</span></h4>
                     <h4>الضريبة (<span id="quoteTaxRateDisplay">0</span>%): <span id="quoteTaxAmount">0.00</span></h4>
                     <h3>إجمالي العرض: <span id="quoteTotalAmount">0.00</span></h3>
@@ -1061,11 +1067,11 @@
     </div>
 
     <!-- View Purchase Order/Quotation Details Modal -->
-    <div id="viewDetailsModal" class="modal">
+    <div id="viewDetailsModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="viewDetailsTitle">
         <div class="modal-content" style="max-width: 700px;">
             <div class="modal-header">
                 <h3 id="viewDetailsTitle"></h3>
-                <span class="close-button" data-modal-id="viewDetailsModal">×</span>
+                <span class="close-button" data-modal-id="viewDetailsModal" aria-label="إغلاق">×</span>
             </div>
             <div id="viewDetailsBody" style="padding: 10px 0;">
                 <!-- Details will be injected here -->
@@ -1082,14 +1088,18 @@
 
 <script>
     // --- Polyfill for structuredClone ---
+    // Provides a way to deep-copy objects, necessary for state management.
     if (typeof self.structuredClone === 'undefined') {
         self.structuredClone = (obj) => JSON.parse(JSON.stringify(obj));
     }
 
     // --- Application State & LocalStorage ---
-    const APP_PREFIX = 'proStoreManager_v8_'; // Increment version for new features
+    // All application data is stored in the 'state' object and persisted to localStorage.
+    const APP_PREFIX = 'proStoreManager_v8_'; // Increment version to avoid conflicts with old data structures
     let state = {};
 
+    // --- Static Data ---
+    // Lists of static data used throughout the application, like currencies and units.
     const currencies = [
         { code: "DZD", symbol: "د.ج", name: "الدينار الجزائري (DZD)" }, { code: "MAD", symbol: "د.م.", name: "الدرهم المغربي (MAD)" },
         { code: "TND", symbol: "د.ت", name: "الدينار التونسي (TND)" }, { code: "LYD", symbol: "ل.د", name: "الدينار الليبي (LYD)" },
@@ -1102,6 +1112,11 @@
         { key: 'l', name: 'لتر' }, { key: 'ml', name: 'مليلتر' }, { key: 'm', name: 'متر' }
     ];
 
+    /**
+     * Loads the application state from localStorage. If no state is found, initializes a default structure.
+     * This function also handles migrating data from older versions by merging with a default structure,
+     * ensuring that new features or data fields don't break the application.
+     */
     function loadState() {
         const storedState = localStorage.getItem(APP_PREFIX + 'appState');
         const defaultStateStructure = {
@@ -1138,10 +1153,21 @@
         updateTaxRateDisplayElements();
     }
 
+    /**
+     * Saves the current state object to localStorage.
+     */
     function saveState() {
-        localStorage.setItem(APP_PREFIX + 'appState', JSON.stringify(state));
+        try {
+            localStorage.setItem(APP_PREFIX + 'appState', JSON.stringify(state));
+        } catch (e) {
+            console.error("Error saving state to localStorage:", e);
+            showToast("خطأ: لا يمكن حفظ البيانات. قد تكون مساحة التخزين ممتلئة.", "error");
+        }
     }
 
+    /**
+     * Initializes some default data (like categories) if the state is empty.
+     */
     function initializeDefaultData() {
         if (state.categories.length === 0) {
             state.categories = [ { id: generateId(), name: 'إلكترونيات' }, { id: generateId(), name: 'ملابس' }, { id: generateId(), name: 'أغذية' }];
@@ -1152,30 +1178,38 @@
         saveState();
     }
 
+    // --- Helper & Utility Functions ---
     function generateId() { return '_' + Math.random().toString(36).substr(2, 9); }
+    
     function formatDate(dateInput) {
         if (!dateInput) return '-';
         const date = new Date(dateInput);
         if (isNaN(date)) return '-';
         return date.toLocaleString('ar-EG', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
     }
+
     function formatDateForInput(dateInput) {
         if (!dateInput) return '';
         const d = new Date(dateInput);
         if (isNaN(d)) return '';
-        let month = '' + (d.getMonth() + 1);
-        let day = '' + d.getDate();
         const year = d.getFullYear();
-        if (month.length < 2) month = '0' + month;
-        if (day.length < 2) day = '0' + day;
-        return [year, month, day].join('-');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     }
 
     function formatCurrency(amount) {
-        if (isNaN(parseFloat(amount))) return `0.00 ${state.currency.symbol || state.currency.code}`;
-        return `${parseFloat(amount).toFixed(2)} ${state.currency.symbol || state.currency.code}`;
+        const numAmount = parseFloat(amount);
+        if (isNaN(numAmount)) return `0.00 ${state.currency.symbol || state.currency.code}`;
+        return `${numAmount.toFixed(2)} ${state.currency.symbol || state.currency.code}`;
+    }
+    
+    function getUnitName(key) {
+        const unit = productUnits.find(u => u.key === key);
+        return unit ? unit.name : (key || '');
     }
 
+    // --- DOM Element References ---
     const navLinks = document.querySelectorAll('.nav-link');
     const pages = document.querySelectorAll('.page');
     const formModalElement = document.getElementById('formModal');
@@ -1186,16 +1220,21 @@
     const debtPaymentModalElement = document.getElementById('debtPaymentModal');
     const quotationModalElement = document.getElementById('quotationModal');
     const viewDetailsModalElement = document.getElementById('viewDetailsModal');
-
     const modalTitleElement = document.getElementById('modalTitle');
     const genericFormElement = document.getElementById('genericForm');
 
+    // --- Navigation & Page Management ---
+    /**
+     * Shows a specific page by its ID and hides all others. Updates the active link in the sidebar.
+     * @param {string} pageId The ID of the page section to display.
+     */
     function showPage(pageId) {
         pages.forEach(page => page.classList.remove('active'));
         navLinks.forEach(link => link.classList.remove('active'));
         document.getElementById(pageId)?.classList.add('active');
         document.querySelector(`.nav-link[data-page="${pageId}"]`)?.classList.add('active');
 
+        // Dynamically render content for the selected page
         switch (pageId) {
             case 'dashboard': renderDashboard(); break;
             case 'products': renderProductsTable(); break;
@@ -1218,9 +1257,14 @@
             e.preventDefault();
             const pageId = e.target.closest('a')?.dataset.page;
             if (pageId) showPage(pageId);
+            // On mobile, close sidebar after clicking a link
+            if (window.innerWidth < 768) {
+                closeSidebar();
+            }
         });
     });
 
+    // --- Modal Management ---
     function openModal(modalElement) { if (modalElement) modalElement.style.display = 'block'; }
     function closeModal(modalElement) {
         if (!modalElement) return;
@@ -1255,7 +1299,8 @@
     window.onclick = (event) => {
         if (event.target.classList.contains('modal')) closeModal(event.target);
     }
-
+    
+    // --- UI Feedback (Toasts & Confirmations) ---
     let toastTimeout;
     function showToast(message, type = 'success', duration = 3000) {
         const existingToast = document.querySelector('.toast');
@@ -1276,6 +1321,7 @@
         document.getElementById('confirmModalMessage').textContent = message;
         const yesBtn = document.getElementById('confirmModalYesBtn');
         const noBtn = document.getElementById('confirmModalNoBtn');
+        // Re-clone the button to remove old event listeners
         const newYesBtn = yesBtn.cloneNode(true);
         yesBtn.parentNode.replaceChild(newYesBtn, yesBtn);
         newYesBtn.onclick = () => { onConfirm(); closeModal(confirmModalElement); };
@@ -1283,6 +1329,15 @@
         openModal(confirmModalElement);
     }
 
+    // --- Dynamic Form Builder ---
+    /**
+     * Dynamically builds and populates a form inside a modal.
+     * @param {Array} fields - An array of field configuration objects.
+     * @param {Object} data - The existing data to populate the form for editing.
+     * @param {Function} submitHandler - The function to call on form submission.
+     * @param {string} modalTitleText - The title for the modal window.
+     * @param {string} formIdToClear - The ID of the form element to build into.
+     */
     function buildForm(fields, data = {}, submitHandler, modalTitleText, formIdToClear = 'genericForm') {
         modalTitleElement.textContent = modalTitleText;
         const formElement = document.getElementById(formIdToClear);
@@ -1294,28 +1349,30 @@
             const label = document.createElement('label'); label.htmlFor = field.id; label.textContent = field.label;
             group.appendChild(label);
 
+            let value = data[field.name] ?? (field.type === 'number' ? '' : '');
+
             if (field.type === 'select') {
                 const select = document.createElement('select');
                 select.id = field.id; select.name = field.name; if (field.required) select.required = true;
                 (field.options || []).forEach(opt => {
                     const option = document.createElement('option');
                     option.value = opt.value; option.textContent = opt.text;
-                    if (data[field.name] == opt.value) option.selected = true;
+                    if (value == opt.value) option.selected = true;
                     select.appendChild(option);
                 });
                 group.appendChild(select);
             } else if (field.type === 'textarea') {
                 const textarea = document.createElement('textarea');
-                textarea.id = field.id; textarea.name = field.name; textarea.value = data[field.name] || '';
+                textarea.id = field.id; textarea.name = field.name; textarea.value = value;
                 if (field.required) textarea.required = true; if (field.placeholder) textarea.placeholder = field.placeholder;
                 group.appendChild(textarea);
             } else {
                 const input = document.createElement('input');
                 input.type = field.type; input.id = field.id; input.name = field.name;
-                if (field.type === 'date' && data[field.name]) {
-                    input.value = formatDateForInput(data[field.name]);
+                if (field.type === 'date' && value) {
+                    input.value = formatDateForInput(value);
                 } else {
-                    input.value = data[field.name] || (field.type === 'number' && field.min !== undefined ? field.min : (field.type === 'number' ? 0 : ''));
+                    input.value = value;
                 }
                 if (field.type === 'number') {
                     if (field.step) input.step = field.step;
@@ -1338,13 +1395,11 @@
             const formData = new FormData(formElement);
             const itemData = Object.fromEntries(formData.entries());
             fields.forEach(field => {
-                if (field.type === 'number' && itemData[field.name] !== '') {
-                    itemData[field.name] = parseFloat(itemData[field.name]);
-                } else if (field.type === 'number' && itemData[field.name] === '') {
-                    itemData[field.name] = field.min !== undefined ? field.min : 0;
+                if (field.type === 'number') {
+                    itemData[field.name] = itemData[field.name] === '' ? null : parseFloat(itemData[field.name]);
                 } else if (field.type === 'date' && itemData[field.name]) {
-                    const [year, month, day] = itemData[field.name].split('-').map(Number);
-                    itemData[field.name] = new Date(Date.UTC(year, month - 1, day)).toISOString();
+                    // Using T00:00:00 ensures the date is interpreted in local time, avoiding timezone shifts.
+                    itemData[field.name] = new Date(itemData[field.name] + 'T00:00:00');
                 }
             });
             if (data.id) itemData.id = data.id;
@@ -1354,11 +1409,6 @@
         if (formElement.closest('.modal') === formModalElement) openModal(formModalElement);
     }
     
-    function getUnitName(key) {
-        const unit = productUnits.find(u => u.key === key);
-        return unit ? unit.name : key;
-    }
-
     // --- Settings Page ---
     function renderSettingsPage() {
         populateCurrencySelect();
@@ -1460,11 +1510,10 @@
     }
 
     // --- Categories Management ---
-    if(document.getElementById('addCategoryBtn')) {
-        document.getElementById('addCategoryBtn').addEventListener('click', () => {
-            buildForm([{ id: 'categoryName', name: 'name', label: 'اسم الفئة:', type: 'text', required: true }], {}, handleSaveCategory, 'إضافة فئة جديدة');
-        });
-    }
+    document.getElementById('addCategoryBtn')?.addEventListener('click', () => {
+        buildForm([{ id: 'categoryName', name: 'name', label: 'اسم الفئة:', type: 'text', required: true }], {}, handleSaveCategory, 'إضافة فئة جديدة');
+    });
+    
     function handleSaveCategory(categoryData) {
         if (categoryData.id) {
             const index = state.categories.findIndex(c => c.id === categoryData.id);
@@ -1501,30 +1550,25 @@
     }
 
     // --- Product Management ---
-    if(document.getElementById('addProductBtn')) {
-        document.getElementById('addProductBtn').addEventListener('click', () => {
-            const categoryOptions = state.categories.map(c => ({ value: c.id, text: c.name }));
-            const unitOptions = productUnits.map(u => ({ value: u.key, text: u.name }));
-            if (categoryOptions.length === 0) { showToast('يجب إضافة فئة منتجات أولاً.', 'error'); showPage('categories'); return; }
-            const fields = [
-                { id: 'productName', name: 'name', label: 'اسم المنتج:', type: 'text', required: true },
-                { id: 'productCategoryId', name: 'categoryId', label: 'الفئة:', type: 'select', options: [{value:'', text:'اختر فئة'}, ...categoryOptions], required: true },
-                { id: 'productUnit', name: 'unit', label: 'وحدة القياس:', type: 'select', options: unitOptions, required: true },
-                { id: 'productSalePrice', name: 'price', label: `سعر البيع (${state.currency.symbol}):`, type: 'number', step: '0.01', min: 0, required: true },
-                { id: 'productCostPrice', name: 'costPrice', label: `تكلفة الشراء (${state.currency.symbol}):`, type: 'number', step: '0.01', min: 0 },
-                { id: 'productQuantity', name: 'quantity', label: 'الكمية الأولية:', type: 'number', min: 0, required: true },
-                { id: 'productReorderLimit', name: 'reorderLimit', label: 'حد إعادة الطلب:', type: 'number', min: 0, placeholder: '10' },
-                { id: 'productBarcode', name: 'barcode', label: 'الباركود (اختياري):', type: 'text' },
-                { id: 'productDescription', name: 'description', label: 'وصف المنتج:', type: 'textarea' },
-            ];
-            buildForm(fields, { costPrice: 0, reorderLimit: 10, unit: 'unit' }, handleSaveProduct, 'إضافة منتج جديد');
-        });
-    }
+    document.getElementById('addProductBtn')?.addEventListener('click', () => {
+        const categoryOptions = state.categories.map(c => ({ value: c.id, text: c.name }));
+        const unitOptions = productUnits.map(u => ({ value: u.key, text: u.name }));
+        if (categoryOptions.length === 0) { showToast('يجب إضافة فئة منتجات أولاً.', 'error'); showPage('categories'); return; }
+        const fields = [
+            { id: 'productName', name: 'name', label: 'اسم المنتج:', type: 'text', required: true },
+            { id: 'productCategoryId', name: 'categoryId', label: 'الفئة:', type: 'select', options: [{value:'', text:'اختر فئة'}, ...categoryOptions], required: true },
+            { id: 'productUnit', name: 'unit', label: 'وحدة القياس:', type: 'select', options: unitOptions, required: true },
+            { id: 'productSalePrice', name: 'price', label: `سعر البيع (${state.currency.symbol}):`, type: 'number', step: '0.01', min: 0, required: true },
+            { id: 'productCostPrice', name: 'costPrice', label: `تكلفة الشراء (${state.currency.symbol}):`, type: 'number', step: '0.01', min: 0 },
+            { id: 'productQuantity', name: 'quantity', label: 'الكمية الأولية:', type: 'number', min: 0, required: true },
+            { id: 'productReorderLimit', name: 'reorderLimit', label: 'حد إعادة الطلب:', type: 'number', min: 0, placeholder: '10' },
+            { id: 'productBarcode', name: 'barcode', label: 'الباركود (اختياري):', type: 'text' },
+            { id: 'productDescription', name: 'description', label: 'وصف المنتج:', type: 'textarea' },
+        ];
+        buildForm(fields, { costPrice: 0, reorderLimit: 10, unit: 'unit' }, handleSaveProduct, 'إضافة منتج جديد');
+    });
+
     function handleSaveProduct(productData) {
-        productData.price = parseFloat(productData.price);
-        productData.costPrice = parseFloat(productData.costPrice || 0);
-        productData.quantity = parseInt(productData.quantity, 10);
-        productData.reorderLimit = parseInt(productData.reorderLimit || 10, 10);
         if (productData.id) {
             const index = state.products.findIndex(p => p.id === productData.id);
             if (index !== -1) state.products[index] = { ...state.products[index], ...productData };
@@ -1544,7 +1588,7 @@
                 <td>${category ? category.name : 'غير محدد'}</td><td>${formatCurrency(product.price)}</td>
                 <td>${formatCurrency(product.costPrice)}</td><td>${product.quantity}</td>
                 <td>${getUnitName(product.unit)}</td>
-                <td>${product.reorderLimit || 10}</td>
+                <td>${product.reorderLimit ?? 10}</td>
                 <td class="action-buttons">
                     <button class="small" onclick="editProduct('${product.id}')"><span class="icon">✏️</span> تعديل</button>
                     <button class="small danger" onclick="confirmDeleteProduct('${product.id}')"><span class="icon">🗑️</span> حذف</button>
@@ -1588,27 +1632,27 @@
         sortedProducts.forEach((product, index) => {
             const row = inventoryTableBody.insertRow();
             let statusClass = 'badge-success'; let statusText = 'متوفر';
+            const reorderLimit = product.reorderLimit ?? 10;
             if (product.quantity <= 0) { statusClass = 'badge-danger'; statusText = 'نفذ المخزون'; }
-            else if (product.quantity <= (product.reorderLimit || 0)) { statusClass = 'badge-warning'; statusText = 'منخفض'; }
+            else if (product.quantity <= reorderLimit) { statusClass = 'badge-warning'; statusText = 'منخفض'; }
             const inventoryValue = (product.costPrice || 0) * product.quantity;
             row.innerHTML = `<td>${index + 1}</td><td>${product.name}</td><td>${product.quantity}</td>
                 <td>${getUnitName(product.unit)}</td>
-                <td>${product.reorderLimit || 10}</td><td><span class="badge ${statusClass}">${statusText}</span></td>
+                <td>${reorderLimit}</td><td><span class="badge ${statusClass}">${statusText}</span></td>
                 <td>${formatCurrency(inventoryValue)}</td>`;
         });
     }
 
     // --- Customer Management ---
-    if(document.getElementById('addCustomerBtn')) {
-        document.getElementById('addCustomerBtn').addEventListener('click', () => {
-            buildForm([
-                { id: 'customerName', name: 'name', label: 'اسم العميل:', type: 'text', required: true },
-                { id: 'customerPhone', name: 'phone', label: 'الهاتف:', type: 'tel' },
-                { id: 'customerEmail', name: 'email', label: 'البريد:', type: 'email' },
-                { id: 'customerAddress', name: 'address', label: 'العنوان:', type: 'textarea' },
-            ], {}, handleSaveCustomer, 'إضافة عميل جديد');
-        });
-    }
+    document.getElementById('addCustomerBtn')?.addEventListener('click', () => {
+        buildForm([
+            { id: 'customerName', name: 'name', label: 'اسم العميل:', type: 'text', required: true },
+            { id: 'customerPhone', name: 'phone', label: 'الهاتف:', type: 'tel' },
+            { id: 'customerEmail', name: 'email', label: 'البريد:', type: 'email' },
+            { id: 'customerAddress', name: 'address', label: 'العنوان:', type: 'textarea' },
+        ], {}, handleSaveCustomer, 'إضافة عميل جديد');
+    });
+    
     function handleSaveCustomer(customerData) {
         if (customerData.id) {
             const index = state.customers.findIndex(c => c.id === customerData.id);
@@ -1716,7 +1760,7 @@
 
         const formData = new FormData(e.target);
         const paymentAmount = parseFloat(formData.get('amount'));
-        const paymentDate = new Date(formData.get('date'));
+        const paymentDate = new Date(formData.get('date') + 'T00:00:00');
 
         if(isNaN(paymentAmount) || paymentAmount <= 0) {
             showToast('الرجاء إدخال مبلغ صحيح.', 'error');
@@ -1757,7 +1801,7 @@
 
     function renderPosPage() {
         if (posProductSearchInput) posProductSearchInput.value = '';
-        if (posProductSearchResultsDiv) posProductSearchResultsDiv.innerHTML = '';
+        if (posProductSearchResultsDiv) posProductSearchResultsDiv.style.display = 'none';
         renderPosCart();
         const posCustomerSelect = document.getElementById('posCustomerSelect');
         if (posCustomerSelect) {
@@ -1776,7 +1820,10 @@
     if(posProductSearchInput) {
         posProductSearchInput.addEventListener('input', () => {
             const searchTerm = posProductSearchInput.value.toLowerCase().trim();
-            if(posProductSearchResultsDiv) posProductSearchResultsDiv.innerHTML = '';
+            if(posProductSearchResultsDiv) {
+                posProductSearchResultsDiv.innerHTML = '';
+                posProductSearchResultsDiv.style.display = 'none';
+            }
             if (!searchTerm) return;
             const matchedProducts = state.products.filter(p =>
                 (p.name.toLowerCase().includes(searchTerm) || (p.barcode && p.barcode.includes(searchTerm)) || p.id.includes(searchTerm)) && p.quantity > 0
@@ -1789,10 +1836,19 @@
                     li.onclick = () => addProductToCart(product.id);
                     ul.appendChild(li);
                 });
-                if(posProductSearchResultsDiv) posProductSearchResultsDiv.appendChild(ul);
+                if(posProductSearchResultsDiv) {
+                     posProductSearchResultsDiv.appendChild(ul);
+                     posProductSearchResultsDiv.style.display = 'block';
+                }
             } else {
                 if(posProductSearchResultsDiv) posProductSearchResultsDiv.innerHTML = '<li style="padding:10px;text-align:center;cursor:default;">لا توجد منتجات مطابقة.</li>';
             }
+        });
+        posProductSearchInput.addEventListener('blur', () => {
+            // Hide search results after a short delay to allow click event to register
+            setTimeout(() => {
+                if (posProductSearchResultsDiv) posProductSearchResultsDiv.style.display = 'none';
+            }, 150);
         });
     }
     function addProductToCart(productId) {
@@ -1804,7 +1860,7 @@
             else { showToast('لا يمكن إضافة كمية أكبر من المتوفر.', 'error'); return; }
         } else { state.currentCart.push({ ...structuredClone(product), quantityInCart: 1 }); }
         if (posProductSearchInput) { posProductSearchInput.value = ''; posProductSearchInput.focus(); }
-        if (posProductSearchResultsDiv) posProductSearchResultsDiv.innerHTML = '';
+        if (posProductSearchResultsDiv) posProductSearchResultsDiv.style.display = 'none';
         renderPosCart();
     }
     function updateCartItemQuantity(productId, change) {
@@ -1921,6 +1977,7 @@
             if(printInvoiceBtn) printInvoiceBtn.onclick = () => handlePrintInvoice(newSale.id);
             
             if(emailInvoiceBtn && emailInvoiceInputGroup && customerEmailForInvoiceInput) {
+                emailInvoiceInputGroup.style.display = 'none'; // Reset view
                 emailInvoiceBtn.onclick = () => {
                     emailInvoiceInputGroup.style.display = 'block';
                     const customer = newSale.customerId ? state.customers.find(c => c.id === newSale.customerId) : null;
@@ -1962,10 +2019,16 @@
     function renderSalesReport() {
         if (!salesReportTableBody) return;
         salesReportTableBody.innerHTML = ''; let filteredSales = [...state.sales];
-        const startDate = reportStartDateInput?.value ? new Date(reportStartDateInput.value) : null;
-        const endDate = reportEndDateInput?.value ? new Date(reportEndDateInput.value) : null;
-        if (startDate) { startDate.setHours(0,0,0,0); filteredSales = filteredSales.filter(sale => new Date(sale.date) >= startDate); }
-        if (endDate) { endDate.setHours(23,59,59,999); filteredSales = filteredSales.filter(sale => new Date(sale.date) <= endDate); }
+        const startDateStr = reportStartDateInput?.value;
+        const endDateStr = reportEndDateInput?.value;
+        if (startDateStr) {
+            const startDate = new Date(startDateStr + 'T00:00:00');
+            filteredSales = filteredSales.filter(sale => new Date(sale.date) >= startDate); 
+        }
+        if (endDateStr) {
+            const endDate = new Date(endDateStr + 'T23:59:59');
+            filteredSales = filteredSales.filter(sale => new Date(sale.date) <= endDate); 
+        }
         filteredSales.sort((a,b) => new Date(b.date) - new Date(a.date));
         if (filteredSales.length === 0) { salesReportTableBody.innerHTML = `<tr><td colspan="7" style="text-align:center;">لا توجد مبيعات تطابق الفلتر.</td></tr>`; return; }
         filteredSales.forEach(sale => {
@@ -2015,19 +2078,20 @@
 
     // --- Invoice & Quote Printing/Emailing ---
     function generateInvoiceHTML(sale, type = 'invoice') {
+        const entityId = sale.id; // Could be sale ID or quote ID
         const customer = sale.customerId ? state.customers.find(c => c.id === sale.customerId) : null;
         let itemsHtml = ''; const sym = sale.currencySymbol || state.currency.symbol;
         const headerTitle = type === 'invoice' ? 'فاتورة مبيعات' : 'عرض سعر / فاتورة أولية';
         const idLabel = type === 'invoice' ? 'رقم الفاتورة' : 'رقم العرض';
         sale.items.forEach(item => {
             itemsHtml += `<tr><td>${item.name}</td><td>${item.quantity} ${getUnitName(item.unit || 'unit')}</td>
-                <td>${parseFloat(item.price || item.costPrice).toFixed(2)} ${sym}</td>
-                <td>${parseFloat(item.subtotal).toFixed(2)} ${sym}</td></tr>`;
+                <td>${parseFloat(item.price || item.costPrice || 0).toFixed(2)} ${sym}</td>
+                <td>${parseFloat(item.subtotal || 0).toFixed(2)} ${sym}</td></tr>`;
         });
         const { name: storeName, address, phone, email, logoUrl } = state.storeDetails;
-        let summaryHtml = `<p><strong>الإجمالي الفرعي:</strong> ${parseFloat(sale.subtotalAmount).toFixed(2)} ${sym}</p>
-                           <p><strong>الضريبة (${(state.taxRate * 100).toFixed(0)}%):</strong> ${parseFloat(sale.taxAmount).toFixed(2)} ${sym}</p>
-                           <p><strong>الإجمالي الكلي:</strong> ${parseFloat(sale.totalAmount).toFixed(2)} ${sym}</p>`;
+        let summaryHtml = `<p><strong>الإجمالي الفرعي:</strong> ${parseFloat(sale.subtotalAmount || 0).toFixed(2)} ${sym}</p>
+                           <p><strong>الضريبة (${(state.taxRate * 100).toFixed(0)}%):</strong> ${parseFloat(sale.taxAmount || 0).toFixed(2)} ${sym}</p>
+                           <p><strong>الإجمالي الكلي:</strong> ${parseFloat(sale.totalAmount || 0).toFixed(2)} ${sym}</p>`;
         
         return `
             ${logoUrl ? `<div style="text-align:center;margin-bottom:10px;"><img src="${logoUrl}" alt="شعار" style="max-height:80px;max-width:200px;"></div>` : ''}
@@ -2035,12 +2099,12 @@
                 <h2>${storeName || 'المحل التجاري'}</h2><p>${address || ''}</p><p>${phone ? `الهاتف: ${phone}`:''} ${email ? `| البريد: ${email}` : ''}</p><hr><h3>${headerTitle}</h3>
             </div>
             <div style="margin-bottom:15px;">
-                <p><strong>${idLabel}:</strong> ${sale.id}</p><p><strong>التاريخ:</strong> ${formatDate(sale.date)}</p>
+                <p><strong>${idLabel}:</strong> ${entityId}</p><p><strong>التاريخ:</strong> ${formatDate(sale.date)}</p>
                 <p><strong>العميل:</strong> ${customer ? customer.name : 'عميل عام'}</p>
                 ${customer && customer.phone ? `<p><strong>هاتف العميل:</strong> ${customer.phone}</p>` : ''}
                 ${type === 'invoice' ? `<p><strong>طريقة الدفع:</strong> ${getPaymentMethodText(sale.paymentMethod || 'cash')}</p>`: ''}
             </div>
-            <table><thead><tr><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr></thead><tbody>${itemsHtml}</tbody></table>
+            <table><thead><tr><th scope="col">المنتج</th><th scope="col">الكمية</th><th scope="col">السعر</th><th scope="col">الإجمالي</th></tr></thead><tbody>${itemsHtml}</tbody></table>
             <div class="invoice-summary" style="margin-top:20px;text-align:left;padding-right:10px;">${summaryHtml}</div>
             <div style="text-align:center;margin-top:30px;font-size:0.9em;"><p>${sale.notes || 'شكراً لتعاملكم معنا!'}</p>${storeName ? `<p>${storeName}</p>`:''}</div>`;
     }
@@ -2080,8 +2144,7 @@
     function renderDashboard() {
         document.getElementById('total-products-stat').textContent = state.products.length;
         document.getElementById('total-customers-stat').textContent = state.customers.length;
-        document.getElementById('total-suppliers-stat').textContent = state.suppliers.length;
-
+        
         const totalDebt = state.customers.reduce((sum, cust) => sum + (cust.debt || 0), 0);
         document.getElementById('total-debts-stat').textContent = formatCurrency(totalDebt);
 
@@ -2091,7 +2154,7 @@
         const totalSalesTodayAmount = todaySales.reduce((sum, sale) => sum + sale.totalAmount, 0);
         document.getElementById('total-sales-today-stat').textContent = formatCurrency(totalSalesTodayAmount);
 
-        const lowStockCount = state.products.filter(p => p.quantity > 0 && p.quantity <= (p.reorderLimit || 0)).length;
+        const lowStockCount = state.products.filter(p => p.quantity > 0 && p.quantity <= (p.reorderLimit || 10)).length;
         document.getElementById('low-stock-products-stat').textContent = lowStockCount;
         
         const now = new Date();
@@ -2133,18 +2196,16 @@
     }
 
     // --- Suppliers Management ---
-    const addSupplierBtn = document.getElementById('addSupplierBtn');
-    if(addSupplierBtn) {
-        addSupplierBtn.addEventListener('click', () => {
-            buildForm([
-                { id: 'supplierName', name: 'name', label: 'اسم المورد:', type: 'text', required: true },
-                { id: 'supplierPhone', name: 'phone', label: 'الهاتف:', type: 'tel' },
-                { id: 'supplierEmail', name: 'email', label: 'البريد:', type: 'email' },
-                { id: 'supplierAddress', name: 'address', label: 'العنوان:', type: 'textarea' },
-                { id: 'supplierNotes', name: 'notes', label: 'ملاحظات:', type: 'textarea' }
-            ], {}, handleSaveSupplier, 'إضافة مورد جديد');
-        });
-    }
+    document.getElementById('addSupplierBtn')?.addEventListener('click', () => {
+        buildForm([
+            { id: 'supplierName', name: 'name', label: 'اسم المورد:', type: 'text', required: true },
+            { id: 'supplierPhone', name: 'phone', label: 'الهاتف:', type: 'tel' },
+            { id: 'supplierEmail', name: 'email', label: 'البريد:', type: 'email' },
+            { id: 'supplierAddress', name: 'address', label: 'العنوان:', type: 'textarea' },
+            { id: 'supplierNotes', name: 'notes', label: 'ملاحظات:', type: 'textarea' }
+        ], {}, handleSaveSupplier, 'إضافة مورد جديد');
+    });
+    
     function handleSaveSupplier(supplierData) {
         if (supplierData.id) {
             const index = state.suppliers.findIndex(s => s.id === supplierData.id);
@@ -2281,14 +2342,14 @@
             const poIndex = state.purchaseOrders.findIndex(po => po.id === editId);
             if (poIndex !== -1) {
                 state.purchaseOrders[poIndex] = { ...state.purchaseOrders[poIndex],
-                    supplierId: poData.supplierId, expectedDate: poData.expectedDate ? new Date(poData.expectedDate) : null,
+                    supplierId: poData.supplierId, expectedDate: poData.expectedDate ? new Date(poData.expectedDate + 'T00:00:00') : null,
                     notes: poData.notes, items: itemsWithSubtotal, totalAmount: totalAmount,
                 }; showToast("تم تحديث طلب الشراء!", "success");
             }
         } else {
             state.purchaseOrders.push({
                 id: 'PO-' + generateId().substring(0,6).toUpperCase(), date: new Date(), supplierId: poData.supplierId,
-                expectedDate: poData.expectedDate ? new Date(poData.expectedDate) : null, items: itemsWithSubtotal,
+                expectedDate: poData.expectedDate ? new Date(poData.expectedDate + 'T00:00:00') : null, items: itemsWithSubtotal,
                 totalAmount: totalAmount, status: 'pending', notes: poData.notes
             }); showToast("تم إنشاء طلب الشراء!", "success");
         }
@@ -2342,7 +2403,7 @@
                            <p><strong>الاستلام المتوقع:</strong> ${po.expectedDate ? formatDate(po.expectedDate) : '-'}</p>
                            <p><strong>الحالة:</strong> <span class="badge ${getPOStatusClass(po.status)}">${getPOStatusText(po.status)}</span></p>
                            <p><strong>الملاحظات:</strong> ${po.notes || '-'}</p>
-                           <h4>الأصناف المطلوبة:</h4><div class="table-responsive-wrapper"><table style="font-size: 0.9em;"><thead><tr><th>المنتج</th><th>الكمية</th><th>تكلفة الوحدة</th><th>الإجمالي</th></tr></thead><tbody>`;
+                           <h4>الأصناف المطلوبة:</h4><div class="table-responsive-wrapper"><table style="font-size: 0.9em;"><thead><tr><th scope="col">المنتج</th><th scope="col">الكمية</th><th scope="col">تكلفة الوحدة</th><th scope="col">الإجمالي</th></tr></thead><tbody>`;
         (po.items || []).forEach(item => {
             detailsHtml += `<tr><td>${item.name}</td><td>${item.quantity} ${getUnitName(item.unit)}</td><td>${formatCurrency(item.costPrice || 0)}</td><td>${formatCurrency((item.costPrice || 0) * item.quantity)}</td></tr>`;
         });
@@ -2502,7 +2563,6 @@
         if (editId) {
             const quoteIndex = state.quotations.findIndex(q => q.id === editId);
             if (quoteIndex !== -1) {
-                const oldStatus = state.quotations[quoteIndex].status;
                 state.quotations[quoteIndex] = { ...state.quotations[quoteIndex],
                     customerId: quoteData.customerId,
                     notes: quoteData.notes,
@@ -2541,7 +2601,7 @@
         const quotationsTableBody = document.querySelector('#quotationsTable tbody');
         if(!quotationsTableBody) return;
         quotationsTableBody.innerHTML = '';
-        const sortedQuotes = [...state.quotations].sort((a,b) => new Date(b.date) - new Date(a.date));
+        const sortedQuotes = [...(state.quotations || [])].sort((a,b) => new Date(b.date) - new Date(a.date));
 
         if (sortedQuotes.length === 0) {
             quotationsTableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">لا توجد عروض أسعار.</td></tr>';
@@ -2592,17 +2652,13 @@
     }
 
     function viewQuotationDetails(quoteId) {
-        const quote = state.quotations.find(q => q.id === quoteId);
-        if (!quote) return;
-
+        const quote = state.quotations.find(q => q.id === quoteId); if (!quote) return;
         const customer = state.customers.find(s => s.id === quote.customerId);
-        const canBeInvoiced = quote.status !== 'invoiced' && quote.status !== 'rejected';
-        
         let detailsHtml = `<p><strong>العميل:</strong> ${customer ? customer.name : '-'}</p>
                            <p><strong>تاريخ العرض:</strong> ${formatDate(quote.date)}</p>
                            <p><strong>الحالة:</strong> <span class="badge ${getQuoteStatusClass(quote.status)}">${getQuoteStatusText(quote.status)}</span></p>
                            <p><strong>الملاحظات:</strong> ${quote.notes || '-'}</p>
-                           <h4>الأصناف:</h4><div class="table-responsive-wrapper"><table style="font-size: 0.9em;"><thead><tr><th>المنتج</th><th>الكمية</th><th>سعر الوحدة</th><th>الإجمالي</th></tr></thead><tbody>`;
+                           <h4>الأصناف:</h4><div class="table-responsive-wrapper"><table style="font-size: 0.9em;"><thead><tr><th scope="col">المنتج</th><th scope="col">الكمية</th><th scope="col">سعر الوحدة</th><th scope="col">الإجمالي</th></tr></thead><tbody>`;
 
         (quote.items || []).forEach(item => {
             detailsHtml += `<tr><td>${item.name}</td><td>${item.quantity} ${getUnitName(item.unit)}</td><td>${formatCurrency(item.price || 0)}</td><td>${formatCurrency(item.subtotal)}</td></tr>`;
@@ -2612,7 +2668,7 @@
                              <p><strong>الضريبة (${(state.taxRate * 100).toFixed(0)}%):</strong> ${formatCurrency(quote.taxAmount)}</p>
                              <p><strong>الإجمالي الكلي للعرض:</strong> ${formatCurrency(quote.totalAmount)}</p>`;
                              
-        detailsHtml += `</tbody></table></div><hr><div style="text-align:left;font-weight:bold;font-size:1.1em;">${summaryHtml}</div>`;
+        detailsHtml += `</tbody></table></div><hr><div class="text-left mt-1" style="font-weight:bold;font-size:1.1em;">${summaryHtml}</div>`;
         
         document.getElementById('viewDetailsTitle').innerHTML = `تفاصيل عرض السعر رقم: ${quote.id}`;
         document.getElementById('viewDetailsBody').innerHTML = detailsHtml;
@@ -2636,7 +2692,6 @@
 
 
     // --- Expenses Management ---
-    const addExpenseBtn = document.getElementById('addExpenseBtn');
     const filterExpensesBtn = document.getElementById('filterExpensesBtn');
     const clearExpenseFilterBtn = document.getElementById('clearExpenseFilterBtn');
     const expenseStartDateInput = document.getElementById('expenseStartDate');
@@ -2647,19 +2702,17 @@
         { value: "supplies", text: "مستلزمات مكتبية" }, { value: "marketing", text: "تسويق وإعلان" },
         { value: "maintenance", text: "صيانة" }, { value: "other", text: "أخرى" }
     ];
-    if(addExpenseBtn) {
-        addExpenseBtn.addEventListener('click', () => {
-            buildForm([
-                { id: 'expenseDate', name: 'date', label: 'التاريخ:', type: 'date', required: true },
-                { id: 'expenseDescription', name: 'description', label: 'الوصف:', type: 'text', required: true },
-                { id: 'expenseCategory', name: 'category', label: 'الفئة:', type: 'select', options: [{value: '', text: 'اختر فئة'}, ...expenseCategories], required: true },
-                { id: 'expenseAmount', name: 'amount', label: `المبلغ (${state.currency.symbol}):`, type: 'number', step: '0.01', min: 0.01, required: true },
-                { id: 'expenseNotes', name: 'notes', label: 'ملاحظات:', type: 'textarea' }
-            ], { date: new Date().toISOString() }, handleSaveExpense, 'إضافة مصروف جديد');
-        });
-    }
+    document.getElementById('addExpenseBtn')?.addEventListener('click', () => {
+        buildForm([
+            { id: 'expenseDate', name: 'date', label: 'التاريخ:', type: 'date', required: true },
+            { id: 'expenseDescription', name: 'description', label: 'الوصف:', type: 'text', required: true },
+            { id: 'expenseCategory', name: 'category', label: 'الفئة:', type: 'select', options: [{value: '', text: 'اختر فئة'}, ...expenseCategories], required: true },
+            { id: 'expenseAmount', name: 'amount', label: `المبلغ (${state.currency.symbol}):`, type: 'number', step: '0.01', min: 0.01, required: true },
+            { id: 'expenseNotes', name: 'notes', label: 'ملاحظات:', type: 'textarea' }
+        ], { date: new Date() }, handleSaveExpense, 'إضافة مصروف جديد');
+    });
+    
     function handleSaveExpense(expenseData) {
-        expenseData.amount = parseFloat(expenseData.amount);
         if (expenseData.id) {
             const index = state.expenses.findIndex(exp => exp.id === expenseData.id);
             if (index !== -1) state.expenses[index] = { ...state.expenses[index], ...expenseData };
@@ -2670,11 +2723,17 @@
         const expensesTableBody = document.querySelector('#expensesTable tbody');
         if (!expensesTableBody || !totalFilteredExpensesSpan) return;
         expensesTableBody.innerHTML = '';
-        let filteredExpenses = [...state.expenses];
-        const startDate = expenseStartDateInput?.value ? new Date(expenseStartDateInput.value) : null;
-        const endDate = expenseEndDateInput?.value ? new Date(expenseEndDateInput.value) : null;
-        if (startDate) { startDate.setHours(0,0,0,0); filteredExpenses = filteredExpenses.filter(exp => new Date(exp.date) >= startDate); }
-        if (endDate) { endDate.setHours(23,59,59,999); filteredExpenses = filteredExpenses.filter(exp => new Date(exp.date) <= endDate); }
+        let filteredExpenses = [...(state.expenses || [])];
+        const startDateStr = expenseStartDateInput?.value;
+        const endDateStr = expenseEndDateInput?.value;
+        if (startDateStr) {
+            const startDate = new Date(startDateStr + 'T00:00:00');
+            filteredExpenses = filteredExpenses.filter(exp => new Date(exp.date) >= startDate); 
+        }
+        if (endDateStr) {
+            const endDate = new Date(endDateStr + 'T23:59:59');
+            filteredExpenses = filteredExpenses.filter(exp => new Date(exp.date) <= endDate); 
+        }
         filteredExpenses.sort((a,b) => new Date(b.date) - new Date(a.date));
         let currentTotalExpenses = 0;
         if (filteredExpenses.length === 0) { expensesTableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">لا توجد مصروفات تطابق الفلتر.</td></tr>'; }
@@ -2709,7 +2768,7 @@
             { id: 'expenseCategory', name: 'category', label: 'الفئة:', type: 'select', options: [{value: '', text: 'اختر فئة'}, ...expenseCategories], required: true },
             { id: 'expenseAmount', name: 'amount', label: `المبلغ (${state.currency.symbol}):`, type: 'number', step: '0.01', min: 0.01, required: true },
             { id: 'expenseNotes', name: 'notes', label: 'ملاحظات:', type: 'textarea' }
-        ], {...expense, date: new Date(expense.date).toISOString()}, handleSaveExpense, 'تعديل المصروف');
+        ], expense, handleSaveExpense, 'تعديل المصروف');
     }
     function confirmDeleteExpense(id) {
         showConfirmModal('هل تريد حذف هذا المصروف؟', () => deleteExpense(id));
@@ -2724,29 +2783,32 @@
     const sidebarElement = document.getElementById('sidebar');
     const mainContentElement = document.getElementById('mainContent');
 
-    if (menuToggleBtn && sidebarElement) {
+    function toggleSidebar() {
+        const isOpen = sidebarElement.classList.toggle('open');
+        menuToggleBtn.setAttribute('aria-expanded', isOpen);
         const iconMenu = menuToggleBtn.querySelector('.icon-menu');
         const iconClose = menuToggleBtn.querySelector('.icon-close');
-        menuToggleBtn.addEventListener('click', () => {
-            sidebarElement.classList.toggle('open');
-            const isOpen = sidebarElement.classList.contains('open');
-            if (iconMenu) iconMenu.style.display = isOpen ? 'none' : 'block';
-            if (iconClose) iconClose.style.display = isOpen ? 'block' : 'none';
-        });
-        const closeSidebarOnContentClick = () => {
+        if (iconMenu) iconMenu.style.display = isOpen ? 'none' : 'block';
+        if (iconClose) iconClose.style.display = isOpen ? 'block' : 'none';
+    }
+
+    function closeSidebar() {
+        if (sidebarElement.classList.contains('open')) {
+            toggleSidebar();
+        }
+    }
+
+    if (menuToggleBtn && sidebarElement) {
+        menuToggleBtn.addEventListener('click', toggleSidebar);
+        // Close sidebar when clicking on the main content area on mobile
+        mainContentElement.addEventListener('click', () => {
              if (window.innerWidth < 768 && sidebarElement.classList.contains('open')) {
-                sidebarElement.classList.remove('open');
-                if (iconMenu) iconMenu.style.display = 'block';
-                if (iconClose) iconClose.style.display = 'none';
+                closeSidebar();
             }
-        };
-        mainContentElement.addEventListener('click', closeSidebarOnContentClick);
-        sidebarElement.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', closeSidebarOnContentClick);
         });
     }
 
-    // --- Initial Load ---
+    // --- Initial Application Load ---
     document.addEventListener('DOMContentLoaded', () => {
         loadState();
         showPage('dashboard');
